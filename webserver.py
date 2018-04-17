@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding: utf-8
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import os
@@ -23,7 +24,8 @@ class Server(BaseHTTPRequestHandler):
 			print "Le fichier n'existe pas"
 
 def run(server_class=HTTPServer, handler_class=Server):
-    server_address = ('192.168.43.70', 8080)
+    #server_address = ('192.168.43.70', 8080)
+    server_address = ('la-machine-a-ecrire', 8080)
     http_connexion = server_class(server_address, handler_class)
     print "web server is running..."
     http_connexion.serve_forever() 
