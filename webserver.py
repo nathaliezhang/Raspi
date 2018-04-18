@@ -1,10 +1,11 @@
 #!/usr/bin/env python
-# coding: utf-8
+# coding: utf8
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import os
 import commands
 from PIL import Image, ImageDraw, ImageFont
+import textwrap
 
 # custom HTTPrequestHandler class
 class Server(BaseHTTPRequestHandler):
@@ -35,14 +36,20 @@ class Server(BaseHTTPRequestHandler):
 	# TODOreturn header and change status
 	
 	# run the command to print the image
-	filename = "texts/text-1"
+	filename = "texts/story"
 	fileformat = ".png"
-	text_transform(story, filename, fileformat)
-	os.system('lpr -o fit-to-page ' + filename + fileformat + '')
+	width = 384
+	bg_color = "#FFF"
+	#font = 'fonts/Maison-Neue/Maison Neue Book.otf'
+	font = 'fonts/Editor/Editor-Medium.ttf'
+	font_size = 25
+	text_transform(story, filename, fileformat, width, bg_color, font, font_size)
+	#os.system('lpr -o fit-to-page ' + filename + fileformat + '')
+	os.system('lpr ' + filename + fileformat + '')
 	print story
 		
 def run(server_class=HTTPServer, handler_class=Server):
-	host = commands.getoutput('hostname -I') #raspberry IP
+	host = commands.getoutput('hostname -I') #raspberry IP : depending the network
 	port = 8080
 	server_address = (host, port)
 	http_connexion = server_class(server_address, handler_class)
@@ -50,14 +57,23 @@ def run(server_class=HTTPServer, handler_class=Server):
 	http_connexion.serve_forever()
 	
 # transform the text in png
-def text_transform(text, filename, fileformat, width=384, bg_color='#FFF', font='fonts/Maison-Neue/Maison Neue Book.otf', font_size=10, text_color='#000'):
+def text_transform(text, filename, fileformat, width, bg_color, font, font_size, text_color='#000'):
     # TODO change the hight according the lines number -> see multiline_textsize
-    # TODO prepare the text treatment : images, fonts...
-    height = 200
+    # TODO prepare the text treatment : images, fonts... : go trought the text to detect words
+    height = 500
     img = Image.new('L', (width, height), bg_color)
-    text_font = ImageFont.truetype(font, font_size)
+    text_font = ImageFont.truetype(font, font_size, encoding="unic")
     context = ImageDraw.Draw(img) #create a drawing context
-    context.text((10,10), text, font=text_font, fill=text_color) #draw text
+    
+    #textwrap 
+    story_lines = textwrap.wrap(text, width=30)
+    left = 10
+    top = 30
+    for story_line in story_lines:
+        story_line = unicode(story_line, 'UTF-8') #correct the characters
+        font_width, font_height = text_font.getsize(text)
+        context.multiline_text((left,top), story_line, fill=text_color, font=text_font) #draw text
+        top += font_height
     del context #destroy drawing context
     img.save(filename + fileformat, "PNG")
     
