@@ -24,7 +24,7 @@ class Server(BaseHTTPRequestHandler):
 		self.end_headers()
 		self.wfile.write(file.read())
 		file.close()          
-	except: 
+	except : 
 	    print "Le fichier n'existe pas"
 	
     #response to a post request	
@@ -43,9 +43,9 @@ class Server(BaseHTTPRequestHandler):
 	#font = 'fonts/Maison-Neue/Maison Neue Book.otf'
 	font = 'fonts/Editor/Editor-Medium.ttf'
 	font_size = 25
-	text_transform(story, filename, fileformat, width, bg_color, font, font_size)
+	text_transform(story, filename, fileformat, width, bg_color, font_size)
 	#os.system('lpr -o fit-to-page ' + filename + fileformat + '')
-	os.system('lpr ' + filename + fileformat + '')
+	#os.system('lpr ' + filename + fileformat + '')
 	print story
 		
 def run(server_class=HTTPServer, handler_class=Server):
@@ -54,25 +54,53 @@ def run(server_class=HTTPServer, handler_class=Server):
 	server_address = (host, port)
 	http_connexion = server_class(server_address, handler_class)
 	print "Web server is running on " + host + "..."
+	text_transform("Il était une fois, des tortues géantes qui nageaient dans l'océan Atlantique.", "texts/story", ".png", 384, "#FFF", 25, text_color='#000')
 	http_connexion.serve_forever()
 	
 # transform the text in png
-def text_transform(text, filename, fileformat, width, bg_color, font, font_size, text_color='#000'):
+def text_transform(text, filename, fileformat, width, bg_color, font_size, text_color='#000'):
     # TODO change the hight according the lines number -> see multiline_textsize
-    # TODO prepare the text treatment : images, fonts... : go trought the text to detect words
     height = 500
     img = Image.new('L', (width, height), bg_color)
-    text_font = ImageFont.truetype(font, font_size, encoding="unic")
+    medium_font = 'fonts/Editor/Editor-Medium.ttf'
+    bold_font = 'fonts/Editor/Editor-Bold.ttf'
+    text_medium_font = ImageFont.truetype(medium_font, font_size, encoding="unic")
+    text_bold_font = ImageFont.truetype(bold_font, font_size, encoding="unic")
     context = ImageDraw.Draw(img) #create a drawing context
+    
+    custom_words = [
+        "Il était une fois",
+        "C'est l'histoire des",
+        "Il y a bien longtemps",
+        "qui",
+        "et",
+        "Soudain",
+        "Un jour",
+        "Tout à coup"
+    ]
     
     #textwrap 
     story_lines = textwrap.wrap(text, width=30)
     left = 10
     top = 30
     for story_line in story_lines:
-        story_line = unicode(story_line, 'UTF-8') #correct the characters
-        font_width, font_height = text_font.getsize(text)
-        context.multiline_text((left,top), story_line, fill=text_color, font=text_font) #draw text
+        
+        font_width, font_height = text_medium_font.getsize(text)
+        
+        # TODO prepare the text treatment : images, fonts... : go trought the text to detect words
+        for expression in custom_words:
+            #print story_line
+            begin_expression = story_line.find(expression)
+            #print begin_expression
+            if begin_expression >= 0: #has the expression
+                end_exppresion = begin_expression + len(expression)
+            else:
+                end_exppresion = begin_expression  
+            #print end_exppresion
+        
+        story_line = unicode(story_line, 'UTF-8') #correct the characters for printing
+        context.multiline_text((left,top), story_line, fill=text_color, font=text_medium_font) #draw text
+        
         top += font_height
     del context #destroy drawing context
     img.save(filename + fileformat, "PNG")
