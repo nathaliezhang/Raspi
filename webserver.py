@@ -12,7 +12,6 @@ class Server(BaseHTTPRequestHandler):
 	
     #response to a get request
     def do_GET(self):
-        #root_dir = '/home/pi/server/web-server/'
         root_dir = '/home/pi/Raspi/'
         html_file = root_dir + 'index.html'
 		
@@ -40,13 +39,15 @@ class Server(BaseHTTPRequestHandler):
 	fileformat = ".png"
 	width = 384
 	bg_color = "#FFF"
-	#font = 'fonts/Maison-Neue/Maison Neue Book.otf'
 	font = 'fonts/Editor/Editor-Medium.ttf'
 	font_size = 25
 	text_transform(story, filename, fileformat, width, bg_color, font_size)
 	#os.system('lpr -o fit-to-page ' + filename + fileformat + '')
 	#os.system('lpr ' + filename + fileformat + '')
 	print story
+	self.send_response(200)
+	self.send_header('Content-type','text/html')
+	self.end_headers()
 		
 def run(server_class=HTTPServer, handler_class=Server):
 	host = commands.getoutput('hostname -I') #raspberry IP : depending the network
@@ -54,7 +55,7 @@ def run(server_class=HTTPServer, handler_class=Server):
 	server_address = (host, port)
 	http_connexion = server_class(server_address, handler_class)
 	print "Web server is running on " + host + "..."
-	text_transform("Il était une fois, des tortues géantes qui nageaient dans l'océan Atlantique.", "texts/story", ".png", 384, "#FFF", 25, text_color='#000')
+	#text_transform("Il était une fois, des tortues géantes qui nageaient dans l'océan Atlantique.", "texts/story", ".png", 384, "#FFF", 25, text_color='#000')
 	http_connexion.serve_forever()
 	
 # transform the text in png
@@ -62,9 +63,9 @@ def text_transform(text, filename, fileformat, width, bg_color, font_size, text_
     # TODO change the hight according the lines number -> see multiline_textsize
     height = 500
     img = Image.new('L', (width, height), bg_color)
-    medium_font = 'fonts/Editor/Editor-Medium.ttf'
-    bold_font = 'fonts/Editor/Editor-Bold.ttf'
-    text_medium_font = ImageFont.truetype(medium_font, font_size, encoding="unic")
+    book_font = 'fonts/Maison-Neue/Maison Neue Book.otf'
+    bold_font = 'fonts/Maison-Neue/Maison Neue Bold.otf'
+    text_book_font = ImageFont.truetype(book_font, font_size, encoding="unic")
     text_bold_font = ImageFont.truetype(bold_font, font_size, encoding="unic")
     context = ImageDraw.Draw(img) #create a drawing context
     
@@ -79,30 +80,66 @@ def text_transform(text, filename, fileformat, width, bg_color, font_size, text_
         "Tout à coup"
     ]
     
-    #textwrap 
-    story_lines = textwrap.wrap(text, width=30)
-    left = 10
+    # text wrap
+    story_lines = textwrap.wrap(text, width=25)
     top = 30
+    
     for story_line in story_lines:
-        
-        font_width, font_height = text_medium_font.getsize(text)
+        show_sentence = 1
+        font_width, font_height = text_book_font.getsize(text)
         
         # TODO prepare the text treatment : images, fonts... : go trought the text to detect words
         for expression in custom_words:
-            #print story_line
-            begin_expression = story_line.find(expression)
-            #print begin_expression
-            if begin_expression >= 0: #has the expression
-                end_exppresion = begin_expression + len(expression)
+            
+            begin = story_line.find(expression)
+            left = 10
+            
+            if begin >= 0: #has the expression
+                show_sentence = 0
+                end = begin + len(expression)
+                
+                if begin == 0:
+                    before = ""
+                else:
+                    before = story_line[0:begin]
+                before_width, before_height = text_book_font.getsize(before)
+                #print before_width
+                before = unicode(before, 'UTF-8')
+                context.multiline_text((left,top), before, fill=text_color, font=text_book_font)
+                left = left + before_width
+
+                strong = story_line[begin:end]
+                strong_width, strong_height = text_bold_font.getsize(strong)
+                #print strong_width, strong_height
+                strong = unicode(strong, 'UTF-8')
+                context.multiline_text((left,top), strong, fill=text_color, font=text_bold_font)
+                left = left + strong_width
+                
+                if end == len(story_line):
+                    after = ""
+                else:
+                    after = story_line[end:len(story_line)]
+                after_width, after_height = text_book_font.getsize(after)
+                #print after_width, after_height
+                after = unicode(after, 'UTF-8')
+                context.multiline_text((left,top), after, fill=text_color, font=text_book_font)
+                #print before
+                #print strong
+                #print after
+                break  
             else:
-                end_exppresion = begin_expression  
-            #print end_exppresion
-        
-        story_line = unicode(story_line, 'UTF-8') #correct the characters for printing
-        context.multiline_text((left,top), story_line, fill=text_color, font=text_medium_font) #draw text
-        
-        top += font_height
-    del context #destroy drawing context
+                end = begin
+                
+        if show_sentence == 1: #hasn't the expression
+            #print story_line
+            story_line = unicode(story_line, 'UTF-8')
+            context.text((left,top), story_line, fill=text_color, font=text_book_font) # draw text
+            
+        #story_line = unicode(story_line, 'UTF-8') #correct the characters before printing
+        #context.text((left,top), story_line, fill=text_color, font=text_book_font) # draw text
+        top += font_height + 5
+    
+    del context # destroy drawing context
     img.save(filename + fileformat, "PNG")
     
 
