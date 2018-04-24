@@ -34,7 +34,7 @@ class Server(BaseHTTPRequestHandler):
 	story = split_data[1] #retrieve the text
 	
 	# run the command to print the image
-	filename = "texts/story"
+	filename = "assets/texts/story"
 	fileformat = ".png"
 	width = 384
 	bg_color = "#FFF"
@@ -60,9 +60,21 @@ def run(server_class=HTTPServer, handler_class=Server):
 # transform the text in png
 def text_transform(text, filename, fileformat, width, bg_color, font_size, text_color='#000'):
     
+    custom_words = [
+        "Il était une fois",
+        "C'est l'histoire des",
+        "Il y a bien longtemps",
+        "qui",
+        "et",
+        "Soudain",
+        "Un jour",
+        "Tout à coup",
+        "à la montagne."
+    ]
+    
     # fonts
-    maison_neue_book = 'fonts/Maison-Neue/Maison Neue Book.otf'
-    maison_neue_bold = 'fonts/Maison-Neue/Maison Neue Bold.otf'
+    maison_neue_book = 'assets/fonts/Maison-Neue/Maison Neue Book.otf'
+    maison_neue_bold = 'assets/fonts/Maison-Neue/Maison Neue Bold.otf'
     text_maison_neue_book = ImageFont.truetype(maison_neue_book, font_size, encoding="unic")
     text_maison_neue_bold = ImageFont.truetype(maison_neue_bold, font_size, encoding="unic")
     
@@ -72,21 +84,22 @@ def text_transform(text, filename, fileformat, width, bg_color, font_size, text_
     font_width, font_height = text_maison_neue_book.getsize(text)
     top = 30
     spacing = font_height + 5
-    
-    height = 2 * top + nb_lines * spacing # img height : margin-top + text + margin-bottom
+    images_height = 0
+    # get the images height for drawImage
+    for story_line in story_lines:
+        for expression in custom_words:
+            begin = story_line.find(expression)
+            if begin >= 0: #has the expression
+                end = begin + len(expression)
+                strong = story_line[begin:end]
+                if strong == "à la montagne.":
+                    custom_img = Image.open("assets/img/mountains.jpg")
+                    img_width, img_height = custom_img.size
+                    images_height += img_height    
+    height = 2 * top + nb_lines * spacing + images_height # img height : margin-top + text + margin-bottom
     img = Image.new('L', (width, height), bg_color)
     context = ImageDraw.Draw(img) #create a drawing context
-    
-    custom_words = [
-        "Il était une fois",
-        "C'est l'histoire des",
-        "Il y a bien longtemps",
-        "qui",
-        "et",
-        "Soudain",
-        "Un jour",
-        "Tout à coup"
-    ]
+
     
     for story_line in story_lines:
         show_sentence = 1
@@ -111,9 +124,20 @@ def text_transform(text, filename, fileformat, width, bg_color, font_size, text_
                 left = left + before_width
 
                 strong = story_line[begin:end]
-                strong = unicode(strong, 'UTF-8')
-                strong_width, strong_height = text_maison_neue_bold.getsize(strong)
-                context.multiline_text((left,top), strong, fill=text_color, font=text_maison_neue_bold)
+                
+                if strong == "à la montagne.":
+                    if begin > 0: # pas le premier mot : retour à la ligne
+                        top += spacing
+                    strong = unicode(strong, 'UTF-8').upper()
+                    strong_width, strong_height = text_maison_neue_bold.getsize(strong)
+                    context.multiline_text((10,top), strong, fill=text_color, font=text_maison_neue_bold)
+                    custom_img = Image.open("assets/img/mountains.jpg")
+                    img.paste(custom_img, (10, top + strong_height))
+                    
+                else:
+                    strong = unicode(strong, 'UTF-8')
+                    strong_width, strong_height = text_maison_neue_bold.getsize(strong)
+                    context.multiline_text((left,top), strong, fill=text_color, font=text_maison_neue_bold)
                 left = left + strong_width
                 
                 if end == len(story_line):
