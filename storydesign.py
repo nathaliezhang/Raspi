@@ -26,7 +26,9 @@ class StoryDesign():
             "Soudain",
             "Un jour",
             "Tout à coup",
-            "montagne."
+            "montagne.",
+            "champignons",
+            "FIN"
         ]
         
         # fonts
@@ -37,6 +39,7 @@ class StoryDesign():
         
         # multiline_text : text wrap
         self.text = story
+        print self.text
         story_lines = textwrap.wrap(self.text, width=25)
         nb_lines = len(story_lines)
         font_width, font_height = text_maison_neue_book.getsize(self.text)
@@ -51,9 +54,13 @@ class StoryDesign():
                     end = begin + len(expression)
                     strong = story_line[begin:end]
                     if strong == "montagne.":
-                        custom_img = Image.open("assets/img/mountains.jpg")
-                        img_width, img_height = custom_img.size
-                        images_height += img_height    
+                        mountains_img = Image.open("assets/img/mountains.jpg")
+                        img_width, img_height = mountains_img.size
+                        images_height += img_height
+                    if strong == "champignons":
+                        mushroom_img = Image.open("assets/img/mountains.jpg")
+                        img_width, img_height = mushroom_img.size
+                        images_height += img_height
         height = 2 * top + nb_lines * spacing + images_height # img height : margin-top + text + margin-bottom
         img = Image.new('L', (self.width, height), self.bg_color)
         context = ImageDraw.Draw(img) #create a drawing context
@@ -83,16 +90,34 @@ class StoryDesign():
 
                     strong = story_line[begin:end]
                     
+                    if strong == "champignons":
+                        if begin > 0: # pas le premier mot : retour à la ligne
+                            top += spacing
+                        #resize img if too big  
+                        old_img = Image.open("assets/img/mountains.jpg")
+                        img_width, img_height = old_img.size
+                        if img_width > 384:
+                            old_img = old_img.resize((384, (384*img_height)/img_width))
+                            old_img.save("assets/img/mountains.jpg")
+                            #open img
+                            new_img = Image.open("assets/img/mountains.jpg")
+                            img.paste(new_img, (0, top))
+                            img_width, img_height = new_img.size
+                            top += img_height
+                        else:
+                            img.paste(old_img, (0, top))
+                            top += img_height
+                            
                     if strong == "montagne.":
                         if begin > 0: # pas le premier mot : retour à la ligne
                             top += spacing
-                        #strong = unicode(strong, 'UTF-8').upper()
-                        #strong_width, strong_height = text_maison_neue_bold.getsize(strong)
-                        #context.multiline_text((10,top), strong, fill=text_color, font=text_maison_neue_bold)
+                        strong = unicode(strong, 'UTF-8').upper()
+                        strong_width, strong_height = text_maison_neue_bold.getsize(strong)
+                        context.multiline_text((10,top), strong, fill=self.text_color, font=text_maison_neue_bold)
                         custom_img = Image.open("assets/img/mountains.jpg")
-                        #img.paste(custom_img, (10, top + strong_height))
-                        img.paste(custom_img, (10, top))
-                        
+                        img.paste(custom_img, (10, top + strong_height))
+                        #img.paste(custom_img, (10, top))
+                    
                     else:
                         strong = unicode(strong, 'UTF-8')
                         strong_width, strong_height = text_maison_neue_bold.getsize(strong)
