@@ -27,8 +27,7 @@ class StoryDesign():
             "Un jour",
             "Tout à coup",
             "montagne.",
-            "champignons",
-            "FIN"
+            "champignons"
         ]
         
         # fonts
@@ -36,6 +35,7 @@ class StoryDesign():
         maison_neue_bold = 'assets/fonts/Maison-Neue/Maison Neue Bold.otf'
         text_maison_neue_book = ImageFont.truetype(maison_neue_book, self.font_size, encoding="unic")
         text_maison_neue_bold = ImageFont.truetype(maison_neue_bold, self.font_size, encoding="unic")
+        text_end_maison_neue_bold = ImageFont.truetype(maison_neue_bold, 40, encoding="unic")
         
         # multiline_text : text wrap
         self.text = story
@@ -46,6 +46,7 @@ class StoryDesign():
         top = 30
         spacing = font_height + 5
         images_height = 0
+        
         # get the images height for drawImage
         for story_line in story_lines:
             for expression in custom_words:
@@ -54,14 +55,23 @@ class StoryDesign():
                     end = begin + len(expression)
                     strong = story_line[begin:end]
                     if strong == "montagne.":
+                        if begin >= 0:
+                            nb_lines += 1
                         mountains_img = Image.open("assets/img/mountains.jpg")
                         img_width, img_height = mountains_img.size
                         images_height += img_height
-                    if strong == "champignons":
-                        mushroom_img = Image.open("assets/img/mountains.jpg")
-                        img_width, img_height = mushroom_img.size
-                        images_height += img_height
-        height = 2 * top + nb_lines * spacing + images_height # img height : margin-top + text + margin-bottom
+##                    if strong == "champignons":
+##                        if begin >= 0:
+##                            nb_lines += 1
+##                        mushroom_img = Image.open("assets/img/mountains.jpg")
+##                        img_width, img_height = mushroom_img.size
+##                        images_height += img_height
+                        
+        # add end
+        the_end = "FIN"
+        the_end_width, the_end_height = text_maison_neue_book.getsize(the_end)
+        
+        height = 2 * top + nb_lines * spacing + images_height + the_end_height
         img = Image.new('L', (self.width, height), self.bg_color)
         context = ImageDraw.Draw(img) #create a drawing context
 
@@ -69,7 +79,6 @@ class StoryDesign():
         for story_line in story_lines:
             show_sentence = 1
             
-            # TODO prepare the text treatment : images, fonts... : go trought the text to detect words
             for expression in custom_words:
                 
                 begin = story_line.find(expression)
@@ -90,34 +99,34 @@ class StoryDesign():
 
                     strong = story_line[begin:end]
                     
-                    if strong == "champignons":
-                        if begin > 0: # pas le premier mot : retour à la ligne
-                            top += spacing
-                        #resize img if too big  
-                        old_img = Image.open("assets/img/mountains.jpg")
-                        img_width, img_height = old_img.size
-                        if img_width > 384:
-                            old_img = old_img.resize((384, (384*img_height)/img_width))
-                            old_img.save("assets/img/mountains.jpg")
-                            #open img
-                            new_img = Image.open("assets/img/mountains.jpg")
-                            img.paste(new_img, (0, top))
-                            img_width, img_height = new_img.size
-                            top += img_height
-                        else:
-                            img.paste(old_img, (0, top))
-                            top += img_height
+##                    if strong == "champignons":
+##                        if begin > 0: # pas le premier mot : retour à la ligne
+##                            top += spacing
+##                        #resize img if too big  
+##                        old_img = Image.open("assets/img/mountains.jpg")
+##                        img_width, img_height = old_img.size
+##                        if img_width > 384:
+##                            old_img = old_img.resize((384, (384*img_height)/img_width))
+##                            old_img.save("assets/img/mountains.jpg")
+##                            #open img
+##                            new_img = Image.open("assets/img/mountains.jpg")
+##                            img.paste(new_img, (0, top))
+##                            img_width, img_height = new_img.size
+##                            top += img_height
+##                        else:
+##                            img.paste(old_img, (0, top))
+##                            top += img_height
                             
                     if strong == "montagne.":
-                        if begin > 0: # pas le premier mot : retour à la ligne
-                            top += spacing
-                        strong = unicode(strong, 'UTF-8').upper()
-                        strong_width, strong_height = text_maison_neue_bold.getsize(strong)
-                        context.multiline_text((10,top), strong, fill=self.text_color, font=text_maison_neue_bold)
+                        #if begin > 0: # pas le premier mot : retour à la ligne
+                            #top += spacing
+                        #strong = unicode(strong, 'UTF-8').upper()
+                        #strong_width, strong_height = text_maison_neue_bold.getsize(strong)
+                        #context.multiline_text((10,top), strong, fill=self.text_color, font=text_maison_neue_bold)
                         custom_img = Image.open("assets/img/mountains.jpg")
                         img.paste(custom_img, (10, top + strong_height))
                         #img.paste(custom_img, (10, top))
-                    
+                        top += img_height
                     else:
                         strong = unicode(strong, 'UTF-8')
                         strong_width, strong_height = text_maison_neue_bold.getsize(strong)
@@ -138,6 +147,40 @@ class StoryDesign():
                 context.text((left,top), story_line, fill=self.text_color, font=text_maison_neue_book) 
                 
             top += spacing
+        
+        # add end
+        the_end = "FIN"
+        the_end_width, the_end_height = text_end_maison_neue_bold.getsize(the_end)
+        center_text = (self.width - the_end_width) / 2
+        list_the_end = list(the_end)
+        for letter in list_the_end:
+            if letter == "F":
+                letter_width, letter_height = text_end_maison_neue_bold.getsize(letter)
+                letter_img = Image.new('RGBA', (letter_width, letter_height), (255, 255, 255, 15))
+                letter_ctx = ImageDraw.Draw(letter_img)
+                letter_ctx.text((0,0), letter, fill=self.text_color, font=text_end_maison_neue_bold)
+                rotate = letter_img.rotate(-15, expand=1)
+                img.paste(rotate, (center_text, top))
+                left = center_text + letter_width + 5
+                top += 5
+            if letter == "I":
+                letter_width, letter_height = text_end_maison_neue_bold.getsize(letter)
+                letter_img = Image.new('L', (letter_width, letter_height), self.bg_color)
+                letter_ctx = ImageDraw.Draw(letter_img)
+                letter_ctx.text((0,0), letter, fill=self.text_color, font=text_end_maison_neue_bold)
+                rotate = letter_img.rotate(-5, expand=1)
+                img.paste(rotate, (left, top))
+                left = left + letter_width
+                top += 5
+            if letter == "N":
+                letter_width, letter_height = text_end_maison_neue_bold.getsize(letter)
+                letter_img = Image.new('L', (letter_width, letter_height), self.bg_color)
+                letter_ctx = ImageDraw.Draw(letter_img)
+                letter_ctx.text((0,0), letter, fill=self.text_color, font=text_end_maison_neue_bold)
+                rotate = letter_img.rotate(15, expand=1)
+                img.paste(rotate, (left, top))
+                
+        #context.text((center_text,top), the_end, fill=self.text_color, font=text_maison_neue_bold)
         
         del context # destroy drawing context
         img.save(self.filename + self.fileformat, "PNG")
