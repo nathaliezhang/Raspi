@@ -3,6 +3,11 @@
 
 from PIL import Image, ImageDraw, ImageFont
 import textwrap
+import sys
+
+if sys.version[0] == '2':
+    reload(sys)
+    sys.setdefaultencoding('utf8')
 
 class StoryDesign():
     
@@ -19,7 +24,7 @@ class StoryDesign():
         # highlight words
         custom_words = [
             "Il était une fois",
-            "C'est l'histoire des",
+            "C'est l'histoire de",
             "Il y a bien longtemps",
             "qui",
             "et",
@@ -35,11 +40,10 @@ class StoryDesign():
         maison_neue_bold = 'assets/fonts/Maison-Neue/Maison Neue Bold.otf'
         text_maison_neue_book = ImageFont.truetype(maison_neue_book, self.font_size, encoding="unic")
         text_maison_neue_bold = ImageFont.truetype(maison_neue_bold, self.font_size, encoding="unic")
-        text_end_maison_neue_bold = ImageFont.truetype(maison_neue_bold, 40, encoding="unic")
+        text_end_maison_neue_bold = ImageFont.truetype(maison_neue_bold, 100, encoding="unic")
         
         # multiline_text : text wrap
         self.text = story
-        print self.text
         story_lines = textwrap.wrap(self.text, width=25)
         nb_lines = len(story_lines)
         font_width, font_height = text_maison_neue_book.getsize(self.text)
@@ -92,7 +96,6 @@ class StoryDesign():
                         before = ""
                     else:
                         before = story_line[0:begin]
-                    before = unicode(before, 'UTF-8') # encode text : correct before print
                     before_width, before_height = text_maison_neue_book.getsize(before) # get text width
                     context.multiline_text((left,top), before, fill=self.text_color, font=text_maison_neue_book) # draw text
                     left = left + before_width
@@ -120,7 +123,6 @@ class StoryDesign():
                     if strong == "montagne.":
                         #if begin > 0: # pas le premier mot : retour à la ligne
                             #top += spacing
-                        #strong = unicode(strong, 'UTF-8').upper()
                         #strong_width, strong_height = text_maison_neue_bold.getsize(strong)
                         #context.multiline_text((10,top), strong, fill=self.text_color, font=text_maison_neue_bold)
                         custom_img = Image.open("assets/img/mountains.jpg")
@@ -128,7 +130,6 @@ class StoryDesign():
                         #img.paste(custom_img, (10, top))
                         top += img_height
                     else:
-                        strong = unicode(strong, 'UTF-8')
                         strong_width, strong_height = text_maison_neue_bold.getsize(strong)
                         context.multiline_text((left,top), strong, fill=self.text_color, font=text_maison_neue_bold)
                     left = left + strong_width
@@ -137,13 +138,11 @@ class StoryDesign():
                         after = ""
                     else:
                         after = story_line[end:len(story_line)]
-                    after = unicode(after, 'UTF-8')
                     after_width, after_height = text_maison_neue_book.getsize(after)
                     context.multiline_text((left,top), after, fill=self.text_color, font=text_maison_neue_book)
                     break
                     
             if show_sentence == 1: #hasn't the expression
-                story_line = unicode(story_line, 'UTF-8')
                 context.text((left,top), story_line, fill=self.text_color, font=text_maison_neue_book) 
                 
             top += spacing
@@ -160,7 +159,11 @@ class StoryDesign():
                 letter_ctx = ImageDraw.Draw(letter_img)
                 letter_ctx.text((0,0), letter, fill=self.text_color, font=text_end_maison_neue_bold)
                 rotate = letter_img.rotate(-15, expand=1)
-                img.paste(rotate, (center_text, top))
+                
+                rotate_width, rotate_height = rotate.size
+                resize = rotate.resize((50, (50*rotate_height)/rotate_width))
+                
+                img.paste(resize, (center_text, top))
                 left = center_text + letter_width + 5
                 top += 5
             if letter == "I":

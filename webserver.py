@@ -4,6 +4,7 @@
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import os
 import commands
+import json
 import storydesign
 
 # custom HTTPrequestHandler class
@@ -28,9 +29,9 @@ class Server(BaseHTTPRequestHandler):
     #response to a post request	
     def do_POST(self):
 	length = int(self.headers['Content-Length'])
-	data = self.rfile.read(length)
-	split_data = data.split('=')
-	story = split_data[1] #retrieve the text
+	data = self.rfile.read(length) #retrieve a json string from the app
+	load_json = json.loads(data) # convert
+	story = load_json["text"]
 	
 	# run the command to print the image
 	paper = storydesign.StoryDesign()
