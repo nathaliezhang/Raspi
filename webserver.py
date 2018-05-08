@@ -39,7 +39,7 @@ class Server(BaseHTTPRequestHandler):
 	fileformat = paper.fileformat
         paper.text_in_img(story)
 	#os.system('lpr -o fit-to-page ' + filename + fileformat + '')
-	#os.system('lpr ' + filename + fileformat + '')
+	os.system('lpr ' + filename + fileformat + '')
 	print story
 	
 	self.send_response(200) # return status
@@ -47,6 +47,15 @@ class Server(BaseHTTPRequestHandler):
 	self.end_headers()
 		
 def run(server_class=HTTPServer, handler_class=Server):
+    
+        #local story design
+        paper = storydesign.StoryDesign()
+        filename = paper.filename
+        fileformat = paper.fileformat
+        story = "Il y a bien longtemps, un petit pois bien dodu au nom de Popo. Il adorait manger de la crème. Ses mains étaient vertes et sa frimousse aussi. Il chantait dans la jungle.@Tout à coup, un bruit s'abattu. Popo eu peur. Il décida de s'en aller plus loin. Ses jambes le portèrent jusqu'à une souche d'arbre.@Quelques heures plus tard, il s'assoupi de fatigue. Il fit de nombreux cauchemars."
+        paper.text_in_img(unicode(story, 'UTF8'))
+        print story
+        
 	host = commands.getoutput('hostname -I') #raspberry IP : depending the network
 	port = 8080
 	server_address = (host, port)
@@ -58,3 +67,4 @@ def run(server_class=HTTPServer, handler_class=Server):
 # run only the function in this file and not in an import
 if __name__ == '__main__':
     run()
+    
