@@ -35,8 +35,10 @@ class StoryDesign():
         ]
         
         # fonts
+        editor_bold = 'assets/fonts/Editor/Editor-Bold.ttf'
         maison_neue_book = 'assets/fonts/Maison-Neue/Maison Neue Book.otf'
         maison_neue_bold = 'assets/fonts/Maison-Neue/Maison Neue Bold.otf'
+        
         text_maison_neue_book = ImageFont.truetype(maison_neue_book, self.font_size, encoding="unic")
         text_maison_neue_bold = ImageFont.truetype(maison_neue_bold, self.font_size, encoding="unic")
         text_end_maison_neue_bold = ImageFont.truetype(maison_neue_bold, 100, encoding="unic")
@@ -62,8 +64,7 @@ class StoryDesign():
                     
                     # get the images height for drawImage
                     if start_sentence == "Quelques heures plus tard":
-                        mountains_img = Image.open("assets/img/mountains.jpg")
-                        img_width, img_height = mountains_img.size
+                        img_height = self.add_image("assets/img/mountains.jpg", False)
                         images_height += img_height
                         
                     #rest of the sentence
@@ -113,16 +114,25 @@ class StoryDesign():
                     
                     # add images
                     if start_sentence.find(","): start_sentence = start_sentence[0:len(start_sentence) - 1] #suctract ,
-                    if start_sentence == "Quelques heures plus tard":
-                        custom_img = Image.open("assets/img/mountains.jpg")
-                        img.paste(custom_img, (0, top))
-                        img_width, img_height = custom_img.size
-                        top += img_height    
+                    if start_sentence == "Tout à coup":
+                        
+                        # fonction to increase text in uppercase
+                        custom_width = self.increase_font(context, start_sentence, editor_bold, 25, top)
+                        center_left = (self.width - custom_width) / 2;
+                        self.increase_font(context, start_sentence, editor_bold, 25, top, center_left)
+                        
+                    elif start_sentence == "Quelques heures plus tard":
+                        
+                        # create fonction to load img
+                        img_height = self.add_image("assets/img/mountains.jpg", True, top, img)
+                        top += img_height
+                        
                     else :
                         context.text((center_left,top), start_sentence, fill=self.text_color, font=text_maison_neue_bold)
                     top += spacing
                     
-                    end_sentence = story_part[end + 1:len(story_part)].strip() # the rest of the sentence
+                    # the rest of the sentence
+                    end_sentence = story_part[end + 1:len(story_part)].strip()
                     
                     
                     # get the first sentence
@@ -149,3 +159,31 @@ class StoryDesign():
         
         del context # destroy drawing context
         img.save(self.filename + self.fileformat, "PNG")
+        
+    
+    def increase_font(self, context, custom_word, font, font_size, top, left = 0):
+        
+        custom_word = custom_word.upper()
+        word_letters = list(custom_word)
+        increase_top = top
+        center_left = left
+        for letter in word_letters:
+            text_font = ImageFont.truetype(font, font_size, encoding="unic")
+            letter_width, letter_height = text_font.getsize(letter) # redo after uppercase center text
+            if center_left != 0: # draw only if left is not null
+                context.text((left,increase_top), letter, fill=self.text_color, font=text_font)
+            left += letter_width
+            increase_top -= int(round(font_size * .1))
+            font_size += int(round(font_size * .1))
+            
+        return left #return the width
+    
+    
+    
+    def add_image(self, url, add, top = 0, img_bg = False):
+        custom_img = Image.open(url)
+        if add == True : img_bg.paste(custom_img, (0, top))
+        img_width, img_height = custom_img.size
+        
+        return img_height
+     
