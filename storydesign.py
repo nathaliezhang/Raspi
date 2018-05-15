@@ -5,6 +5,7 @@ from PIL import Image, ImageDraw, ImageFont
 import textwrap
 import sys
 import effects
+from random import randint
 
 if sys.version[0] == '2':
     reload(sys)
@@ -41,6 +42,8 @@ class StoryDesign():
     def text_in_img(self, title, story):
 
         # fonts
+        editor_regular = 'assets/fonts/Editor/Editor-Regular.ttf'
+        editor_medium = 'assets/fonts/Editor/Editor-Medium.ttf'
         editor_bold = 'assets/fonts/Editor/Editor-Bold.ttf'
         maison_neue_book = 'assets/fonts/Maison-Neue/Maison Neue Book.otf'
         maison_neue_bold = 'assets/fonts/Maison-Neue/Maison Neue Bold.otf'
@@ -61,7 +64,10 @@ class StoryDesign():
         before_part = bottom = 60
         after_part = 30
         
-        height = effects.get_img_height(self.custom_words, title, story_parts, top, spacing, title_margin_bottom, before_part, after_part, bottom)
+        onceupon_effect = randint(1,2)
+        print onceupon_effect
+        
+        height = effects.get_img_height(self.custom_words, title, story_parts, self.width, onceupon_effect, top, spacing, title_margin_bottom, before_part, after_part, bottom)
         img = Image.new('L', (self.width, height), self.bg_color)
         context = ImageDraw.Draw(img) #create a drawing context
         
@@ -97,22 +103,26 @@ class StoryDesign():
                     #TODO : Check if have a custom word in this paragraph
                     if start_sentence.find(",") >= 0:
                         start_sentence = start_sentence[0:len(start_sentence) - 1] #suctract ,
-                        
-                    # fonction mirrot effect
-                    #if start_sentence == "Il était une fois":
-                        
                        
                     # fonction to increase text in uppercase
                     if start_sentence == "Tout à coup" or start_sentence == 'Soudain':
                         custom_width = effects.increase_font(context, start_sentence, editor_bold, 25, self.text_color, top)
                         center_left = (self.width - custom_width) / 2;
                         effects.increase_font(context, start_sentence, editor_bold, 25, self.text_color, top, center_left)
-                        
-                    elif start_sentence == "Puis":
-                        
-                        # create fonction to load img
-                        img_height = effects.add_image("assets/img/mountains.jpg", True, top, img)
-                        top += img_height
+                    
+                                            
+                    # fonction mirrot effect
+                    elif start_sentence == "Il était une fois":
+                        if onceupon_effect == 1:
+                            height = effects.two_fonts(self.width, start_sentence, editor_regular, 35, maison_neue_book, 20, spacing + 10, self.text_color, top, context)
+                        elif onceupon_effect == 2:
+                            height = effects.mirror_font(self.width, start_sentence, editor_regular, 30, spacing -5, self.text_color, top, context)            
+                        top += height  
+                    
+##                    elif start_sentence == "Puis":
+##                        # create fonction to load img
+##                        img_height = effects.add_image("assets/img/mountains.jpg", True, top, img)
+##                        top += img_height
                         
                     else :
                         context.text((center_left,top), start_sentence, fill=self.text_color, font=text_maison_neue_bold)

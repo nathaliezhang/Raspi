@@ -4,11 +4,21 @@
 from PIL import Image, ImageFont
 import textwrap
 
-def get_img_height(custom_words, title, story_parts, top, spacing, title_margin_bottom, before_part, after_part, bottom):
+
+
+# fonts
+editor_regular = 'assets/fonts/Editor/Editor-Regular.ttf'
+editor_medium = 'assets/fonts/Editor/Editor-Medium.ttf'
+editor_bold = 'assets/fonts/Editor/Editor-Bold.ttf'
+maison_neue_book = 'assets/fonts/Maison-Neue/Maison Neue Book.otf'
+maison_neue_bold = 'assets/fonts/Maison-Neue/Maison Neue Bold.otf'
+
+def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top, spacing, title_margin_bottom, before_part, after_part, bottom):
         
     nb_lines = 0
     nb_parts = 0
     images_height = 0
+    font_effects_height = 0
         
     # height according the title
     title_lines = textwrap.wrap(title, width=30)
@@ -24,11 +34,18 @@ def get_img_height(custom_words, title, story_parts, top, spacing, title_margin_
                     
                 start_sentence = story_part[begin:end + 1].strip() # custom words
                 if start_sentence.find(","): start_sentence = start_sentence[0:len(start_sentence) - 1] #suctract ,
-                    
-                # get the images height for drawImage
-                if start_sentence == "Puis":
-                    img_height = add_image("assets/img/mountains.jpg", False)
-                    images_height += img_height
+                
+                if start_sentence == "Il était une fois":
+                    if onceupon_effect == 1:
+                        height = two_fonts(width, start_sentence, editor_regular, 35, maison_neue_book, 20, spacing + 10, "#000", top)
+                    elif onceupon_effect == 2:
+                        height = mirror_font(width, start_sentence, editor_regular, 30, spacing -5, "#000", top)            
+                    font_effects_height += height
+                        
+##                # get the images height for drawImage
+##                if start_sentence == "Puis":
+##                    img_height = add_image("assets/img/mountains.jpg", False)
+##                    images_height += img_height
                         
                 #rest of the sentence
                 end_sentence = story_part[end + 1:len(story_part)].strip()
@@ -55,7 +72,7 @@ def get_img_height(custom_words, title, story_parts, top, spacing, title_margin_
         nb_lines += 1
         nb_parts += 1
             
-    height = top + title_margin_bottom + nb_lines * spacing + nb_parts * before_part + nb_parts * after_part + images_height + bottom
+    height = top + title_margin_bottom + nb_lines * spacing + nb_parts * before_part + nb_parts * after_part + images_height + font_effects_height + bottom
     return height
             
     
@@ -75,8 +92,54 @@ def increase_font(context, custom_word, font, font_size, text_color, top, left =
         font_size += int(round(font_size * .1))
             
     return left #return the width
+
     
+def mirror_font(width, start_sentence, font, font_size, spacing, text_color, top, context = False):
     
+    words = start_sentence.split(" ")
+    text_font = ImageFont.truetype(font, font_size, encoding="unic")
+    mirror_top = top
+    height = 0
+    
+    for index, word in enumerate(words):
+        if index % 2 == 0: # even
+            word_width, word_height = text_font.getsize(word)
+            left = width / 2
+            if context : context.text((left,mirror_top), word, fill=text_color, font=text_font)
+            mirror_top += spacing
+            height += spacing
+        else: # odd
+            word_width, word_height = text_font.getsize(word)
+            left = width / 2 - word_width
+            if context : context.text((left,mirror_top), word, fill=text_color, font=text_font)
+            mirror_top += spacing
+            height += spacing
+            
+    return height
+
+
+def two_fonts(width, start_sentence, first_font, first_font_size, second_font, second_font_size, spacing, text_color, top, context = False):
+    effect_top = top
+    height = 0
+    
+    first_text_font = ImageFont.truetype(first_font, first_font_size, encoding="unic")
+    second_text_font = ImageFont.truetype(second_font, second_font_size, encoding="unic")
+    
+    words = start_sentence.split(" ", 2)
+    part_one = (words[0] + ' ' + words[1]).upper()
+    part_one_width, part_one_height = first_text_font.getsize(part_one)
+    first_center_left = (width - part_one_width) / 2
+    if context : context.text((first_center_left,effect_top), part_one, fill=text_color, font=first_text_font)
+    effect_top += spacing
+    height += spacing
+    
+    part_two = words[2].upper()
+    part_two_width, part_two_height = second_text_font.getsize(part_two)
+    second_center_left = (width - part_two_width) / 2
+    if context : context.text((second_center_left,effect_top), part_two, fill=text_color, font=second_text_font)
+    
+    return height
+            
     
 def add_image(url, add, top = 0, img_bg = False):
     custom_img = Image.open(url)
