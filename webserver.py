@@ -32,15 +32,23 @@ class Server(BaseHTTPRequestHandler):
 	data = self.rfile.read(length) #retrieve a json string from the app
 	load_json = json.loads(data) # convert
 	story = load_json["text"]
+	title = load_json["title"]
+	quantity = load_json["quantity"]
 	
 	# run the command to print the image
 	paper = storydesign.StoryDesign()
 	filename = paper.filename
 	fileformat = paper.fileformat
-        paper.text_in_img(story)
-	#os.system('lpr -o fit-to-page ' + filename + fileformat + '')
-	os.system('lpr ' + filename + fileformat + '')
-	print story
+        paper.text_in_img(title, story)
+        print title
+        print story
+        
+        # print the quantity choose
+        copy = 0
+        while copy < quantity:
+            #os.system('lpr -o fit-to-page ' + filename + fileformat + '')
+            os.system('lpr ' + filename + fileformat + '')
+            copy += 1
 	
 	self.send_response(200) # return status
 	self.send_header('Content-type','text/html') # return header
@@ -52,9 +60,10 @@ def run(server_class=HTTPServer, handler_class=Server):
         paper = storydesign.StoryDesign()
         filename = paper.filename
         fileformat = paper.fileformat
-        story = "Il y a bien longtemps, un petit pois bien dodu au nom de Popo. Il adorait manger de la crème. Ses mains étaient vertes et sa frimousse aussi. Il chantait dans la jungle.@Tout à coup, un bruit s'abattu. Popo eu peur. Il décida de s'en aller plus loin. Ses jambes le portèrent jusqu'à une souche d'arbre.@Quelques heures plus tard, il s'assoupi de fatigue. Il fit de nombreux cauchemars."
-        paper.text_in_img(unicode(story, 'UTF8'))
-        print story
+        title = "Un chat sous l'océan"
+        story = "C'est l'histoire d’un chat. Il était blanc tacheté d’orange. Il n’avait qu’un seul œil et adorait jouer avec les poissons. Un jour, il plongea sous l'ocean.@Soudain, un poisson rouge vint à sa rencontre. Le chat intrigué, s’approcha de ce dernier. Il lui tendit la patte. Le poisson ne comprenant pas son geste eu peur et s’enfuit à toute vitesse.@Puis, il alla se cacher derrière un rocher. Surpris, le chat parti de nouveau à sa rencontre. C'est alors qu'un sorcier surgit de nulle part, il jeta un sort et éclata de rire. Il transforma le chat en poisson. Ne voyant pas le chat, le poisson sorti de sa cachette.@Ensuite, Il vit un poisson chat sans se douter un seconde de sa véritable identité. Le poisson chat tout heureux s’approcha de lui.@Depuis ce jour, ils furent inséparables. FIN."    
+        paper.text_in_img(unicode(title, 'UTF8'), unicode(story, 'UTF8'))
+        #print story
         
 	host = commands.getoutput('hostname -I') #raspberry IP : depending the network
 	port = 8080
