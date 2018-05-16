@@ -43,7 +43,7 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
                     font_effects_height += height
                 
                 elif start_sentence == "Tout à coup" or start_sentence == 'Soudain':
-                        font_effects_height += spacing
+                        font_effects_height += spacing * 2 + 15
                     
                 elif start_sentence == "C'est alors":
                         height = effects.space_between(self.width, start_sentence, maison_neue_book, 25, spacing - 25, self.text_color, top, context)
@@ -181,8 +181,45 @@ def word_in_sentence(width, start_sentence, first_font, first_font_size, second_
         left = first_word_width + second_word_width
         
     return left
+
                             
+def line_between(width, start_sentence, font, font_size, spacing, text_color, top, context = False):
+    effect_top = top
+    height = 0
+    text_font = ImageFont.truetype(font, font_size, encoding="unic")
+                        
+    if start_sentence == "Ensuite":
+        
+        start = start_sentence[0:2]
+        end = start_sentence[2:len(start_sentence)] + ", "
+        
+        line_width = 100
+        line_margin = 2
+        start_width, start_height = text_font.getsize(start) # start word size
+        end_width, end_height = text_font.getsize(end) # end word size
+        
+        
+        effect_width = start_width + line_width + 2 * line_margin + end_width
+        center_left = (width - effect_width) / 2
+        
+        if context :
+            context.text((center_left, effect_top), start, fill=text_color, font=text_font)
+            
+        if context :
+            line_start = center_left + start_width + line_margin
+            effect_top += font_size / 2
+            context.line((line_start , effect_top, line_start + line_width, effect_top), "#000", 2)
+            
+        if context :
+            line_end = center_left + start_width + line_margin * 2 + line_width
+            effect_top -= font_size / 2
+            context.text((line_end, effect_top), end, fill=text_color, font=text_font)
+        
+        height += spacing
+                            
+        return height
     
+                    
 def add_image(url, add, top = 0, img_bg = False):
     custom_img = Image.open(url)
     if add == True : img_bg.paste(custom_img, (0, top))

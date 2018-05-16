@@ -26,6 +26,7 @@ class StoryDesign():
             "C'est l'histoire",
             "Il y a bien longtemps",
             "Un jour",
+            "Un matin",
             "Soudain",
             "Tout à coup",
             "Le lendemain",
@@ -108,7 +109,7 @@ class StoryDesign():
                     
                     #TODO : Check if have a custom word in this paragraph
                     if start_sentence.find(",") >= 0:
-                        start_sentence = start_sentence[0:len(start_sentence) - 1] #suctract ,
+                        start_sentence = start_sentence[0:len(start_sentence) - 1] # suctract "," to detect the word
                         
                         
                     # fonction mirrot effect
@@ -119,15 +120,18 @@ class StoryDesign():
                             height = effects.mirror_font(self.width, start_sentence, editor_regular, self.font_size + 5, spacing -5, self.text_color, top, context)            
                         top += height
                         
-                    elif start_sentence == "Un jour":
+                    elif start_sentence == "Un jour" or start_sentence == 'Un matin':
                         effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rcontour, self.font_size + 45, self.text_color, top, context)
                        
                     # fonction to increase text in uppercase
                     elif start_sentence == "Tout à coup" or start_sentence == 'Soudain':
-                        custom_width = effects.increase_font(context, start_sentence, editor_bold, self.font_size, self.text_color, top)
+                        custom_width = effects.increase_font(context, start_sentence, editor_bold, self.font_size + 5, self.text_color, top)
                         center_left = (self.width - custom_width) / 2;
-                        effects.increase_font(context, start_sentence, editor_bold, 25, self.text_color, top, center_left)
-                    
+                        effects.increase_font(context, start_sentence, editor_bold, self.font_size + 5, self.text_color, top, center_left)
+                        top += 15
+                        
+                    elif start_sentence == "Ensuite":
+                        effects.line_between(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, context)
                     
                     elif start_sentence == "C'est alors":
                         height = effects.space_between(self.width, start_sentence, maison_neue_book, self.font_size, spacing - 25, self.text_color, top, context)
@@ -163,10 +167,11 @@ class StoryDesign():
                     for first_story_line in first_story_lines:
                         
                         if start_sentence == "Soudain":
-                            text_maison_neue_rotate = ImageFont.truetype(maison_neue_rotate, self.font_size + 6, encoding="unic")
+                            text_maison_neue_rotate = ImageFont.truetype(maison_neue_rotate, self.font_size + 5, encoding="unic")
                             line_width, line_height = text_maison_neue_rotate.getsize(first_story_line) # get text width
                             center_left = (self.width - line_width) / 2; # center text
                             context.multiline_text((center_left, top), first_story_line, fill=self.text_color, font=text_maison_neue_rotate) # draw text
+                            top -= 5 
                         
                         elif start_sentence == "Un jour":
                             left = effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rcontour, self.font_size + 45, self.text_color, top, False)
