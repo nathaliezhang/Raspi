@@ -48,8 +48,11 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
                     
                 elif start_sentence == "C'est alors":
                     height = effects.space_between(self.width, start_sentence, maison_neue_book, 25, spacing - 25, self.text_color, top, context)
-                    font_effects_height += height
-                        
+                    font_effects_height += height + 5
+                    
+                elif start_sentence == "Un jour":
+                    font_effects_height += spacing + 10
+                    
                 elif start_sentence == "Ensuite":
                     font_effects_height += spacing
                         
@@ -253,6 +256,49 @@ def paragraph_after_effect(first_sentence, first_line_width, left, top, spacing,
     
     return effect_top
 
+
+def vertical_mirror(width, start_sentence, font, font_size, spacing, text_color, top, context):
+
+    if start_sentence == "Heureusement":
+        top_offset = spacing / 2
+        top += spacing - 15
+        left = 0
+        height = 0
+        syllables = ["Heu", "reu", "se", "ment"]
+        target_font_size = font_size
+                        
+        # find the font size
+        while left <= width:
+                            
+            for index, syllable in enumerate(syllables):
+                
+                text_font = ImageFont.truetype(font, target_font_size, encoding="unic")
+                word = syllable.upper()
+                syllable_width, syllable_height = text_font.getsize(word)
+                
+                left += syllable_width
+            target_font_size += 1
+                            
+            if left <= width: # init until condition is fulfil
+                left = 0
+                                   
+        # draw the text
+        left = 0
+        for index, syllable in enumerate(syllables):
+            
+            text_font = ImageFont.truetype(font, target_font_size - 2, encoding="unic")
+            word = syllable.upper()
+            syllable_width, syllable_height = text_font.getsize(word)
+            if index % 2 == 0:
+                context.text((left, top), word, fill=text_color, font=text_font)
+            else:
+                context.text((left, top - top_offset), word, fill=text_color, font=text_font)
+                            
+            left += syllable_width
+            height = syllable_height
+        
+        return height
+            
                     
 def add_image(url, add, top = 0, img_bg = False):
     custom_img = Image.open(url)

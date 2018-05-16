@@ -137,6 +137,10 @@ class StoryDesign():
                     elif start_sentence == "C'est alors":
                         height = effects.space_between(self.width, start_sentence, maison_neue_book, self.font_size, spacing - 25, self.text_color, top, context)
                         top += height
+                    
+                    elif start_sentence == "Heureusement":
+                        height = effects.vertical_mirror(self.width, start_sentence, maison_neue_book, self.font_size, spacing, self.text_color, top, context)
+                        top += height
                          
 ##                    elif start_sentence == "Puis":
 ##                        # create fonction to load img
