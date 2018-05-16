@@ -82,7 +82,7 @@ class StoryDesign():
         # start to draw in the context
         
         # draw title
-        title_lines = textwrap.wrap(title, width=30)
+        title_lines = textwrap.wrap(title, width=28)
         for title_line in title_lines:
             custom_width, custom_height = text_maison_neue_bold.getsize(title_line) # get text width
             center_left = (self.width - custom_width) / 2; # center text
@@ -92,7 +92,7 @@ class StoryDesign():
             
 		
 	for story_part in story_parts:
-	    story_lines = textwrap.wrap(story_part, width=30)
+	    story_lines = textwrap.wrap(story_part, width=28)
 	    
 	    
 	    # detect custom words
@@ -163,7 +163,7 @@ class StoryDesign():
                     rest_sentences = end_sentence[index_end_first_sentence + 1:len(end_sentence)].strip()
                     
                     # center first sentence
-                    first_story_lines = textwrap.wrap(first_sentence, width=30)
+                    first_story_lines = textwrap.wrap(first_sentence, width=28)
                     for first_story_line in first_story_lines:
                         
                         if start_sentence == "Soudain":
@@ -175,17 +175,36 @@ class StoryDesign():
                         
                         elif start_sentence == "Un jour":
                             left = effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rcontour, self.font_size + 45, self.text_color, top, False)
-
-                            sentences = textwrap.wrap(first_story_lines[0], width=20)
-                            first_part = ', ' + sentences[0]
-                            context.text((left, top - spacing), first_part, fill=self.text_color, font=text_maison_neue_book)
+                            top = effects.paragraph_after_effect(first_sentence, 20, left, top, spacing, self.text_color, text_maison_neue_book, context, True)
+                            break
+                        
+##                            sentences = textwrap.wrap(first_story_lines[0], width=20)
+##                            first_part = ', ' + sentences[0]
+##                            context.text((left, top - spacing), first_part, fill=self.text_color, font=text_maison_neue_book)
+##                            
+##                            rest_part = sentences[1]
+##                            rest_lines = textwrap.wrap(rest_part, width=28)
+##                            for rest_line in rest_lines:
+##                                context.text((0, top), rest_line, fill=self.text_color, font=text_maison_neue_book)
+##                                top += spacing
+##                            top -= spacing
                             
-                            rest_part = sentences[1]
-                            rest_lines = textwrap.wrap(rest_part, width=30)
-                            for rest_line in rest_lines:
-                                context.text((0, top), rest_line, fill=self.text_color, font=text_maison_neue_book)
-                                top += spacing
-                            top -= spacing    
+                        elif start_sentence == "Ensuite":
+                            left = effects.line_between(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, False)
+                            top = effects.paragraph_after_effect(first_sentence, 15, left, top, spacing, self.text_color, text_maison_neue_book, context)
+                            break
+##                            sentences = textwrap.wrap(first_sentence, width=15)
+##                      
+##                            first_part = sentences[0]
+##                            context.text((left, top - spacing), first_part, fill=self.text_color, font=text_maison_neue_book)
+##                            
+##                            rest_part = first_sentence[len(first_part):len(first_sentence)].strip()
+##                            rest_lines = textwrap.wrap(rest_part, width=28)
+##                            for rest_line in rest_lines:
+##                                context.text((0, top), rest_line, fill=self.text_color, font=text_maison_neue_book)
+##                                top += spacing
+##                            break
+                            
                             
                         else:    
                             line_width, line_height = text_maison_neue_book.getsize(first_story_line) # get text width
@@ -195,7 +214,7 @@ class StoryDesign():
                     top += spacing - 10
                     
                     # rest of the part
-                    rest_story_lines = textwrap.wrap(rest_sentences, width=30)
+                    rest_story_lines = textwrap.wrap(rest_sentences, width=28)
                     for rest_story_line in rest_story_lines:
                         line_width, line_height = text_maison_neue_book.getsize(rest_story_line) # get text width
                         context.multiline_text((0,top), rest_story_line, fill=self.text_color, font=text_maison_neue_book) # draw text

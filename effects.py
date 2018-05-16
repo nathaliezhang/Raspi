@@ -21,7 +21,7 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
     font_effects_height = 0
         
     # height according the title
-    title_lines = textwrap.wrap(title, width=30)
+    title_lines = textwrap.wrap(title, width=28)
     nb_lines += len(title_lines)
         
     for story_part in story_parts: # nb parts
@@ -49,6 +49,9 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
                         height = effects.space_between(self.width, start_sentence, maison_neue_book, 25, spacing - 25, self.text_color, top, context)
                         font_effects_height += height
                         
+                elif start_sentence == "Ensuite":
+                    font_effects_height += spacing
+                        
 ##                # get the images height for drawImage
 ##                if start_sentence == "Puis":
 ##                    img_height = add_image("assets/img/mountains.jpg", False)
@@ -62,7 +65,7 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
                     if end_sentence.find(expression) >= 0: # if end_entence contain à custom word : cut
                         end_twice = end_sentence.find(expression)
                         end_sentence = end_sentence[0:end_twice].strip()
-                        rest_end_sentence = textwrap.wrap(end_sentence, width=30)
+                        rest_end_sentence = textwrap.wrap(end_sentence, width=28)
                         nb_lines += len(rest_end_sentence)
                         break
                     
@@ -71,8 +74,8 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
                 first_sentence = end_sentence[0:index_end_first_sentence + 1]
                 rest_sentences = end_sentence[index_end_first_sentence + 1:len(end_sentence)].strip()
                     
-                first_story_lines = textwrap.wrap(first_sentence, width=30)
-                rest_story_lines = textwrap.wrap(rest_sentences, width=30)
+                first_story_lines = textwrap.wrap(first_sentence, width=28)
+                rest_story_lines = textwrap.wrap(rest_sentences, width=28)
                     
                 nb_lines += len(first_story_lines)
                 nb_lines += len(rest_story_lines)
@@ -185,7 +188,7 @@ def word_in_sentence(width, start_sentence, first_font, first_font_size, second_
                             
 def line_between(width, start_sentence, font, font_size, spacing, text_color, top, context = False):
     effect_top = top
-    height = 0
+    left = 0
     text_font = ImageFont.truetype(font, font_size, encoding="unic")
                         
     if start_sentence == "Ensuite":
@@ -196,29 +199,39 @@ def line_between(width, start_sentence, font, font_size, spacing, text_color, to
         line_width = 100
         line_margin = 2
         start_width, start_height = text_font.getsize(start) # start word size
-        end_width, end_height = text_font.getsize(end) # end word size
+        end_width, end_height = text_font.getsize(end) # start word size
+        line_start = start_width + line_margin
         
-        
-        effect_width = start_width + line_width + 2 * line_margin + end_width
-        center_left = (width - effect_width) / 2
-        
-        if context :
-            context.text((center_left, effect_top), start, fill=text_color, font=text_font)
-            
-        if context :
-            line_start = center_left + start_width + line_margin
+        if context:
+            context.text((0, effect_top), start, fill=text_color, font=text_font) # en
             effect_top += font_size / 2
-            context.line((line_start , effect_top, line_start + line_width, effect_top), "#000", 2)
-            
-        if context :
-            line_end = center_left + start_width + line_margin * 2 + line_width
+            context.line((line_start , effect_top, line_start + line_width, effect_top), "#000", 2) # line
+            line_start += line_margin + line_width
             effect_top -= font_size / 2
-            context.text((line_end, effect_top), end, fill=text_color, font=text_font)
+            context.text((line_start, effect_top), end, fill=text_color, font=text_font) # suite
         
-        height += spacing
+        left += start_width + line_margin * 2 + line_width + end_width
                             
-        return height
+    return left
+
     
+def paragraph_after_effect(first_sentence, first_line_width, left, top, spacing, text_color, text_font, context, add_comma = False):
+    
+    effect_top = top
+    sentences = textwrap.wrap(first_sentence, width=first_line_width)
+                      
+    if add_comma : first_part = ', ' + sentences[0]
+    else : first_part = sentences[0]
+    context.text((left, effect_top - spacing), first_part, fill=text_color, font=text_font)
+                            
+    rest_part = first_sentence[len(sentences[0]):len(first_sentence)].strip()
+    rest_lines = textwrap.wrap(rest_part, width=28)
+    for rest_line in rest_lines:
+        context.text((0, effect_top), rest_line, fill=text_color, font=text_font)
+        effect_top += spacing
+    
+    return effect_top
+
                     
 def add_image(url, add, top = 0, img_bg = False):
     custom_img = Image.open(url)
