@@ -13,10 +13,11 @@ editor_bold = 'assets/fonts/Editor/Editor-Bold.ttf'
 maison_neue_book = 'assets/fonts/Maison-Neue/Maison Neue Book.otf'
 maison_neue_bold = 'assets/fonts/Maison-Neue/Maison Neue Bold.otf'
 
-def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top, spacing, title_margin_bottom, before_part, after_part, bottom):
+def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top, spacing, title_margin_bottom, before, after_part, bottom):
         
     nb_lines = 0
     nb_parts = 0
+    nb_subparts = 0
     images_height = 0
     font_effects_height = 0
         
@@ -43,11 +44,11 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
                     font_effects_height += height
                 
                 elif start_sentence == "Tout à coup" or start_sentence == 'Soudain':
-                        font_effects_height += spacing * 2 + 15
+                    font_effects_height += spacing * 2 + 15
                     
                 elif start_sentence == "C'est alors":
-                        height = effects.space_between(self.width, start_sentence, maison_neue_book, 25, spacing - 25, self.text_color, top, context)
-                        font_effects_height += height
+                    height = effects.space_between(self.width, start_sentence, maison_neue_book, 25, spacing - 25, self.text_color, top, context)
+                    font_effects_height += height
                         
                 elif start_sentence == "Ensuite":
                     font_effects_height += spacing
@@ -67,6 +68,7 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
                         end_sentence = end_sentence[0:end_twice].strip()
                         rest_end_sentence = textwrap.wrap(end_sentence, width=28)
                         nb_lines += len(rest_end_sentence)
+                        nb_subparts += 1
                         break
                     
                 # get the first sentence
@@ -81,27 +83,33 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
                 nb_lines += len(rest_story_lines)
         nb_lines += 1
         nb_parts += 1
-            
-    height = top + title_margin_bottom + before_part + nb_lines * spacing + nb_parts * after_part + images_height + font_effects_height + bottom
+    
+    
+    height = top + before + title_margin_bottom + nb_lines * spacing + nb_parts * after_part + images_height + font_effects_height + bottom - nb_subparts * (after_part - spacing) - after_part + spacing
     return height
             
     
-def increase_font(context, custom_word, font, font_size, text_color, top, left = 0):
+def increase_font(custom_word, font, font_size, text_color, top, left = 0, context = False):
         
     custom_word = custom_word.upper()
     word_letters = list(custom_word)
-    increase_top = top
+    baseline = increase_top = top
     center_left = left
     for letter in word_letters:
         text_font = ImageFont.truetype(font, font_size, encoding="unic")
         letter_width, letter_height = text_font.getsize(letter) # redo after uppercase center text
         if center_left != 0: # draw only if left is not null
-            context.text((left,increase_top), letter, fill=text_color, font=text_font)
+            if context : context.text((left,increase_top), letter, fill=text_color, font=text_font)
         left += letter_width
         increase_top -= int(round(font_size * .1))
         font_size += int(round(font_size * .1))
-            
-    return left #return the width
+    
+    # add comma
+    baseline += int(round(font_size * .1))
+    text_maison_neue_book = ImageFont.truetype(maison_neue_book, 28, encoding="unic")
+    if context : context.text((left, baseline), ', ', fill=text_color, font=text_maison_neue_book)
+    
+    return left
 
     
 def mirror_font(width, start_sentence, font, font_size, spacing, text_color, top, context = False):
@@ -110,6 +118,7 @@ def mirror_font(width, start_sentence, font, font_size, spacing, text_color, top
     text_font = ImageFont.truetype(font, font_size, encoding="unic")
     effect_top = top
     height = 0
+    last_elm_left = 0
     
     for index, word in enumerate(words):
         if index % 2 == 0: # even
@@ -118,13 +127,20 @@ def mirror_font(width, start_sentence, font, font_size, spacing, text_color, top
             if context : context.text((left,effect_top), word, fill=text_color, font=text_font)
             effect_top += spacing
             height += spacing
+            if index == len(words) -1: last_elm_left = left + word_width
+            
         else: # odd
             word_width, word_height = text_font.getsize(word)
             left = width / 2 - word_width
             if context : context.text((left,effect_top), word, fill=text_color, font=text_font)
             effect_top += spacing
             height += spacing
+            if index == len(words) -1: last_elm_left = left + word_width
             
+        if index == len(words) -1 : # add comma
+            text_maison_neue_book = ImageFont.truetype(maison_neue_book, 28, encoding="unic")
+            if context : context.text((last_elm_left, effect_top - 14), ', ', fill=text_color, font=text_maison_neue_book)
+    
     return height
 
 
@@ -148,6 +164,11 @@ def two_fonts(width, start_sentence, first_font, first_font_size, second_font, s
     second_center_left = (width - part_two_width) / 2
     if context : context.text((second_center_left,effect_top), part_two, fill=text_color, font=second_text_font)
     
+    # add comma
+    comma_left = second_center_left + part_two_width
+    text_maison_neue_book = ImageFont.truetype(maison_neue_book, 28, encoding="unic")
+    if context : context.text((comma_left, effect_top - 2), ', ', fill=text_color, font=text_maison_neue_book)
+            
     return height
 
 

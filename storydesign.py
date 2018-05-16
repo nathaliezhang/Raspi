@@ -44,6 +44,8 @@ class StoryDesign():
         ]
     
     def text_in_img(self, title, story):
+    
+        in_part = False
 
         # fonts
         editor_regular = 'assets/fonts/Editor/Editor-Regular.ttf'
@@ -56,7 +58,6 @@ class StoryDesign():
         
         text_maison_neue_book = ImageFont.truetype(maison_neue_book, self.font_size, encoding="unic")
         text_maison_neue_bold = ImageFont.truetype(maison_neue_bold, self.font_size, encoding="unic")
-        text_end_maison_neue_bold = ImageFont.truetype(maison_neue_bold, 100, encoding="unic")
         
         
         # multiline_text : text wrap
@@ -65,16 +66,16 @@ class StoryDesign():
         
         # init story params
         top = 0
-        title_margin_bottom = 50
+        title_margin_bottom = 120
         font_width, font_height = text_maison_neue_book.getsize(self.text)
         spacing = font_height + 5
-        before_part = bottom = 60
-        after_part = 50
+        before = bottom = 60
+        after_part = 100
         
         onceupon_effect = randint(1,2)
         print onceupon_effect
         
-        height = effects.get_img_height(self.custom_words, title, story_parts, self.width, onceupon_effect, top, spacing, title_margin_bottom, before_part, after_part, bottom)
+        height = effects.get_img_height(self.custom_words, title, story_parts, self.width, onceupon_effect, top, spacing, title_margin_bottom, before, after_part, bottom)
         img = Image.new('L', (self.width, height), self.bg_color)
         context = ImageDraw.Draw(img) #create a drawing context
         
@@ -86,7 +87,7 @@ class StoryDesign():
         for title_line in title_lines:
             custom_width, custom_height = text_maison_neue_bold.getsize(title_line) # get text width
             center_left = (self.width - custom_width) / 2; # center text
-            top += before_part #space before part
+            top += before # space on the top of the paper
             context.text((center_left,top), title_line, fill=self.text_color, font=text_maison_neue_bold)
             top += title_margin_bottom #space before part
             
@@ -105,7 +106,7 @@ class StoryDesign():
                     start_sentence = story_part[begin:end + 1].strip() # space before @
                     custom_width, custom_height = text_maison_neue_bold.getsize(start_sentence) # get text width
                     center_left = (self.width - custom_width) / 2; # center text
-                    top += after_part
+                    
                     
                     #TODO : Check if have a custom word in this paragraph
                     if start_sentence.find(",") >= 0:
@@ -121,29 +122,41 @@ class StoryDesign():
                         top += height
                         
                     elif start_sentence == "Un jour" or start_sentence == 'Un matin':
+                        if in_part :
+                            top -= after_part - spacing
+                            in_part = False
                         effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rcontour, self.font_size + 45, self.text_color, top, context)
                        
                     # fonction to increase text in uppercase
                     elif start_sentence == "Tout à coup" or start_sentence == 'Soudain':
-                        custom_width = effects.increase_font(context, start_sentence, editor_bold, self.font_size + 5, self.text_color, top)
+                        custom_width = effects.increase_font(start_sentence, editor_bold, self.font_size + 5, self.text_color, top)
                         center_left = (self.width - custom_width) / 2;
-                        effects.increase_font(context, start_sentence, editor_bold, self.font_size + 5, self.text_color, top, center_left)
+                        effects.increase_font(start_sentence, editor_bold, self.font_size + 5, self.text_color, top, center_left, context)
                         top += 15
                         
                     elif start_sentence == "Ensuite":
                         effects.line_between(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, context)
                     
                     elif start_sentence == "C'est alors":
+                        if in_part :
+                            top -= after_part - spacing
+                            in_part = False
                         height = effects.space_between(self.width, start_sentence, maison_neue_book, self.font_size, spacing - 25, self.text_color, top, context)
                         top += height
                         
+##                    elif start_sentence == "Puis":
+##                        if in_part :
+##                            top -= after_part - spacing
+##                            in_part = False
+##                        context.text((center_left, top), start_sentence + ', ', fill=self.text_color, font=text_maison_neue_bold)
+                         
 ##                    elif start_sentence == "Puis":
 ##                        # create fonction to load img
 ##                        img_height = effects.add_image("assets/img/mountains.jpg", True, top, img)
 ##                        top += img_height
                         
                     else :
-                        context.text((center_left,top), start_sentence + ', ', fill=self.text_color, font=text_maison_neue_bold)
+                        context.text((center_left, top), start_sentence + ', ', fill=self.text_color, font=text_maison_neue_bold)
                     top += spacing
                     
                     # the rest of the sentence
@@ -153,8 +166,10 @@ class StoryDesign():
                     # has a custom word in the previous end_send that has a custom word
                     for expression in self.custom_words:
                         if end_sentence.find(expression) >= 0: # if end_entence contain à custom word : cut
+                            in_part = True
                             end_twice = end_sentence.find(expression)
                             end_sentence = end_sentence[0:end_twice].strip()
+                    
                             break
                     
                     # get the first sentence
@@ -162,7 +177,7 @@ class StoryDesign():
                     first_sentence = end_sentence[0:index_end_first_sentence + 1]
                     rest_sentences = end_sentence[index_end_first_sentence + 1:len(end_sentence)].strip()
                     
-                    # center first sentence
+                    # center first sentence end or not
                     first_story_lines = textwrap.wrap(first_sentence, width=28)
                     for first_story_line in first_story_lines:
                         
@@ -177,34 +192,11 @@ class StoryDesign():
                             left = effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rcontour, self.font_size + 45, self.text_color, top, False)
                             top = effects.paragraph_after_effect(first_sentence, 20, left, top, spacing, self.text_color, text_maison_neue_book, context, True)
                             break
-                        
-##                            sentences = textwrap.wrap(first_story_lines[0], width=20)
-##                            first_part = ', ' + sentences[0]
-##                            context.text((left, top - spacing), first_part, fill=self.text_color, font=text_maison_neue_book)
-##                            
-##                            rest_part = sentences[1]
-##                            rest_lines = textwrap.wrap(rest_part, width=28)
-##                            for rest_line in rest_lines:
-##                                context.text((0, top), rest_line, fill=self.text_color, font=text_maison_neue_book)
-##                                top += spacing
-##                            top -= spacing
                             
                         elif start_sentence == "Ensuite":
                             left = effects.line_between(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, False)
                             top = effects.paragraph_after_effect(first_sentence, 15, left, top, spacing, self.text_color, text_maison_neue_book, context)
-                            break
-##                            sentences = textwrap.wrap(first_sentence, width=15)
-##                      
-##                            first_part = sentences[0]
-##                            context.text((left, top - spacing), first_part, fill=self.text_color, font=text_maison_neue_book)
-##                            
-##                            rest_part = first_sentence[len(first_part):len(first_sentence)].strip()
-##                            rest_lines = textwrap.wrap(rest_part, width=28)
-##                            for rest_line in rest_lines:
-##                                context.text((0, top), rest_line, fill=self.text_color, font=text_maison_neue_book)
-##                                top += spacing
-##                            break
-                            
+                            break                           
                             
                         else:    
                             line_width, line_height = text_maison_neue_book.getsize(first_story_line) # get text width
@@ -220,6 +212,7 @@ class StoryDesign():
                         context.multiline_text((0,top), rest_story_line, fill=self.text_color, font=text_maison_neue_book) # draw text
                         top += spacing
                     
+                    top += after_part
         
         del context # destroy drawing context
         img.save(self.filename + self.fileformat, "PNG")
