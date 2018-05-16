@@ -41,6 +41,13 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
                     elif onceupon_effect == 2:
                         height = mirror_font(width, start_sentence, editor_regular, 30, spacing -5, "#000", top)            
                     font_effects_height += height
+                
+                elif start_sentence == "Tout à coup" or start_sentence == 'Soudain':
+                        font_effects_height += spacing
+                    
+                elif start_sentence == "C'est alors":
+                        height = effects.space_between(self.width, start_sentence, maison_neue_book, 25, spacing - 25, self.text_color, top, context)
+                        font_effects_height += height
                         
 ##                # get the images height for drawImage
 ##                if start_sentence == "Puis":
@@ -72,7 +79,7 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
         nb_lines += 1
         nb_parts += 1
             
-    height = top + title_margin_bottom + nb_lines * spacing + nb_parts * before_part + nb_parts * after_part + images_height + font_effects_height + bottom
+    height = top + title_margin_bottom + before_part + nb_lines * spacing + nb_parts * after_part + images_height + font_effects_height + bottom
     return height
             
     
@@ -98,21 +105,21 @@ def mirror_font(width, start_sentence, font, font_size, spacing, text_color, top
     
     words = start_sentence.split(" ")
     text_font = ImageFont.truetype(font, font_size, encoding="unic")
-    mirror_top = top
+    effect_top = top
     height = 0
     
     for index, word in enumerate(words):
         if index % 2 == 0: # even
             word_width, word_height = text_font.getsize(word)
             left = width / 2
-            if context : context.text((left,mirror_top), word, fill=text_color, font=text_font)
-            mirror_top += spacing
+            if context : context.text((left,effect_top), word, fill=text_color, font=text_font)
+            effect_top += spacing
             height += spacing
         else: # odd
             word_width, word_height = text_font.getsize(word)
             left = width / 2 - word_width
-            if context : context.text((left,mirror_top), word, fill=text_color, font=text_font)
-            mirror_top += spacing
+            if context : context.text((left,effect_top), word, fill=text_color, font=text_font)
+            effect_top += spacing
             height += spacing
             
     return height
@@ -139,7 +146,42 @@ def two_fonts(width, start_sentence, first_font, first_font_size, second_font, s
     if context : context.text((second_center_left,effect_top), part_two, fill=text_color, font=second_text_font)
     
     return height
-            
+
+
+def space_between(width, start_sentence, font, font_size, spacing, text_color, top, context = False):
+    effect_top = top
+    height = 0
+    text_font = ImageFont.truetype(font, font_size, encoding="unic")
+    
+    words = start_sentence.upper().split(" ")
+    if len(words) == 2:
+        if context : context.text((0,effect_top), words[0], fill=text_color, font=text_font) # first word
+        part_two_width, part_two_height = text_font.getsize(words[1]) # second word
+        part_two_left = width - part_two_width
+        if context : context.text((part_two_left,effect_top), words[1], fill=text_color, font=text_font)
+        height += spacing
+        
+    return height
+
+
+def word_in_sentence(width, start_sentence, first_font, first_font_size, second_fond, second_font_size, text_color, top, context = False):
+    
+    text_first_font = ImageFont.truetype(first_font, first_font_size, encoding="unic")
+    text_second_font = ImageFont.truetype(second_fond, second_font_size, encoding="unic")
+                        
+    words = start_sentence.split(" ")
+    if len(words) == 2:
+        # first word
+        first_word_width, first_word_height = text_first_font.getsize(words[0] + ' ') # get text width
+        if context : context.text((0,top), words[0], fill=text_color, font=text_first_font) # draw text
+                            
+        # second word
+        second_word_width, second_word_height = text_second_font.getsize(words[1]) # get text width
+        if context : context.text((first_word_width,top - 35), words[1], fill=text_color, font=text_second_font) # draw text
+        left = first_word_width + second_word_width
+        
+    return left
+                            
     
 def add_image(url, add, top = 0, img_bg = False):
     custom_img = Image.open(url)

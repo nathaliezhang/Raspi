@@ -19,7 +19,7 @@ class StoryDesign():
          self.fileformat = ".png"
          self.width = 384
          self.bg_color = "#FFF"
-         self.font_size = 25
+         self.font_size = 28
          self.text_color = "#000"
          self.custom_words = [
             "Il était une fois",
@@ -34,6 +34,9 @@ class StoryDesign():
             "Puis",
             "Ensuite",
             "Peu après",
+            "C'est alors",
+            "Heureusement",
+            "Malheureusement",
             "Et c'est ainsi",
             "Depuis ce jour",
             "Désormais"
@@ -47,10 +50,13 @@ class StoryDesign():
         editor_bold = 'assets/fonts/Editor/Editor-Bold.ttf'
         maison_neue_book = 'assets/fonts/Maison-Neue/Maison Neue Book.otf'
         maison_neue_bold = 'assets/fonts/Maison-Neue/Maison Neue Bold.otf'
+        maison_neue_rotate = 'assets/fonts/Maison-Neue/Maison-Neue-Rotate.otf'
+        maison_neue_rcontour = 'assets/fonts/Maison-Neue/Maison-Neue-RContour.otf'
         
         text_maison_neue_book = ImageFont.truetype(maison_neue_book, self.font_size, encoding="unic")
         text_maison_neue_bold = ImageFont.truetype(maison_neue_bold, self.font_size, encoding="unic")
         text_end_maison_neue_bold = ImageFont.truetype(maison_neue_bold, 100, encoding="unic")
+        
         
         # multiline_text : text wrap
         self.text = story
@@ -58,11 +64,11 @@ class StoryDesign():
         
         # init story params
         top = 0
-        title_margin_bottom = 60
+        title_margin_bottom = 50
         font_width, font_height = text_maison_neue_book.getsize(self.text)
         spacing = font_height + 5
         before_part = bottom = 60
-        after_part = 30
+        after_part = 50
         
         onceupon_effect = randint(1,2)
         print onceupon_effect
@@ -81,7 +87,7 @@ class StoryDesign():
             center_left = (self.width - custom_width) / 2; # center text
             top += before_part #space before part
             context.text((center_left,top), title_line, fill=self.text_color, font=text_maison_neue_bold)
-            top += spacing
+            top += title_margin_bottom #space before part
             
 		
 	for story_part in story_parts:
@@ -98,34 +104,42 @@ class StoryDesign():
                     start_sentence = story_part[begin:end + 1].strip() # space before @
                     custom_width, custom_height = text_maison_neue_bold.getsize(start_sentence) # get text width
                     center_left = (self.width - custom_width) / 2; # center text
-                    top += title_margin_bottom #space before part
+                    top += after_part
                     
                     #TODO : Check if have a custom word in this paragraph
                     if start_sentence.find(",") >= 0:
                         start_sentence = start_sentence[0:len(start_sentence) - 1] #suctract ,
+                        
+                        
+                    # fonction mirrot effect
+                    if start_sentence == "Il était une fois":
+                        if onceupon_effect == 1:
+                            height = effects.two_fonts(self.width, start_sentence, editor_regular, self.font_size + 10, maison_neue_book, self.font_size - 4, spacing + 10, self.text_color, top, context)
+                        elif onceupon_effect == 2:
+                            height = effects.mirror_font(self.width, start_sentence, editor_regular, self.font_size + 5, spacing -5, self.text_color, top, context)            
+                        top += height
+                        
+                    elif start_sentence == "Un jour":
+                        effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rcontour, self.font_size + 45, self.text_color, top, context)
                        
                     # fonction to increase text in uppercase
-                    if start_sentence == "Tout à coup" or start_sentence == 'Soudain':
-                        custom_width = effects.increase_font(context, start_sentence, editor_bold, 25, self.text_color, top)
+                    elif start_sentence == "Tout à coup" or start_sentence == 'Soudain':
+                        custom_width = effects.increase_font(context, start_sentence, editor_bold, self.font_size, self.text_color, top)
                         center_left = (self.width - custom_width) / 2;
                         effects.increase_font(context, start_sentence, editor_bold, 25, self.text_color, top, center_left)
                     
-                                            
-                    # fonction mirrot effect
-                    elif start_sentence == "Il était une fois":
-                        if onceupon_effect == 1:
-                            height = effects.two_fonts(self.width, start_sentence, editor_regular, 35, maison_neue_book, 20, spacing + 10, self.text_color, top, context)
-                        elif onceupon_effect == 2:
-                            height = effects.mirror_font(self.width, start_sentence, editor_regular, 30, spacing -5, self.text_color, top, context)            
-                        top += height  
                     
+                    elif start_sentence == "C'est alors":
+                        height = effects.space_between(self.width, start_sentence, maison_neue_book, self.font_size, spacing - 25, self.text_color, top, context)
+                        top += height
+                        
 ##                    elif start_sentence == "Puis":
 ##                        # create fonction to load img
 ##                        img_height = effects.add_image("assets/img/mountains.jpg", True, top, img)
 ##                        top += img_height
                         
                     else :
-                        context.text((center_left,top), start_sentence, fill=self.text_color, font=text_maison_neue_bold)
+                        context.text((center_left,top), start_sentence + ', ', fill=self.text_color, font=text_maison_neue_bold)
                     top += spacing
                     
                     # the rest of the sentence
@@ -147,11 +161,33 @@ class StoryDesign():
                     # center first sentence
                     first_story_lines = textwrap.wrap(first_sentence, width=30)
                     for first_story_line in first_story_lines:
-                        line_width, line_height = text_maison_neue_book.getsize(first_story_line) # get text width
-                        center_left = (self.width - line_width) / 2; # center text
-                        context.multiline_text((center_left,top), first_story_line, fill=self.text_color, font=text_maison_neue_book) # draw text
+                        
+                        if start_sentence == "Soudain":
+                            text_maison_neue_rotate = ImageFont.truetype(maison_neue_rotate, self.font_size + 6, encoding="unic")
+                            line_width, line_height = text_maison_neue_rotate.getsize(first_story_line) # get text width
+                            center_left = (self.width - line_width) / 2; # center text
+                            context.multiline_text((center_left, top), first_story_line, fill=self.text_color, font=text_maison_neue_rotate) # draw text
+                        
+                        elif start_sentence == "Un jour":
+                            left = effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rcontour, self.font_size + 45, self.text_color, top, False)
+
+                            sentences = textwrap.wrap(first_story_lines[0], width=20)
+                            first_part = ', ' + sentences[0]
+                            context.text((left, top - spacing), first_part, fill=self.text_color, font=text_maison_neue_book)
+                            
+                            rest_part = sentences[1]
+                            rest_lines = textwrap.wrap(rest_part, width=30)
+                            for rest_line in rest_lines:
+                                context.text((0, top), rest_line, fill=self.text_color, font=text_maison_neue_book)
+                                top += spacing
+                            top -= spacing    
+                            
+                        else:    
+                            line_width, line_height = text_maison_neue_book.getsize(first_story_line) # get text width
+                            center_left = (self.width - line_width) / 2; # center text
+                            context.multiline_text((center_left,top), first_story_line, fill=self.text_color, font=text_maison_neue_book) # draw text
                         top += spacing
-                    top += after_part
+                    top += spacing - 10
                     
                     # rest of the part
                     rest_story_lines = textwrap.wrap(rest_sentences, width=30)
