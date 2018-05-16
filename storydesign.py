@@ -108,7 +108,7 @@ class StoryDesign():
                     center_left = (self.width - custom_width) / 2; # center text
                     
                     
-                    #TODO : Check if have a custom word in this paragraph
+                    # check if have a custom word in this paragraph
                     if start_sentence.find(",") >= 0:
                         start_sentence = start_sentence[0:len(start_sentence) - 1] # suctract "," to detect the word
                         
@@ -122,9 +122,6 @@ class StoryDesign():
                         top += height
                         
                     elif start_sentence == "Un jour" or start_sentence == 'Un matin':
-                        if in_part :
-                            top -= after_part - spacing
-                            in_part = False
                         effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rcontour, self.font_size + 45, self.text_color, top, context)
                        
                     # fonction to increase text in uppercase
@@ -138,17 +135,8 @@ class StoryDesign():
                         effects.line_between(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, context)
                     
                     elif start_sentence == "C'est alors":
-                        if in_part :
-                            top -= after_part - spacing
-                            in_part = False
                         height = effects.space_between(self.width, start_sentence, maison_neue_book, self.font_size, spacing - 25, self.text_color, top, context)
                         top += height
-                        
-##                    elif start_sentence == "Puis":
-##                        if in_part :
-##                            top -= after_part - spacing
-##                            in_part = False
-##                        context.text((center_left, top), start_sentence + ', ', fill=self.text_color, font=text_maison_neue_bold)
                          
 ##                    elif start_sentence == "Puis":
 ##                        # create fonction to load img
@@ -162,14 +150,11 @@ class StoryDesign():
                     # the rest of the sentence
                     end_sentence = story_part[end + 1:len(story_part)].strip()
                     
-                    # TODO : case if there three custom words
                     # has a custom word in the previous end_send that has a custom word
                     for expression in self.custom_words:
                         if end_sentence.find(expression) >= 0: # if end_entence contain à custom word : cut
-                            in_part = True
                             end_twice = end_sentence.find(expression)
                             end_sentence = end_sentence[0:end_twice].strip()
-                    
                             break
                     
                     # get the first sentence
@@ -190,7 +175,7 @@ class StoryDesign():
                         
                         elif start_sentence == "Un jour":
                             left = effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rcontour, self.font_size + 45, self.text_color, top, False)
-                            top = effects.paragraph_after_effect(first_sentence, 20, left, top, spacing, self.text_color, text_maison_neue_book, context, True)
+                            top = effects.paragraph_after_effect(first_sentence, 20, left, top + 10, spacing, self.text_color, text_maison_neue_book, context, True)
                             break
                             
                         elif start_sentence == "Ensuite":
@@ -212,7 +197,7 @@ class StoryDesign():
                         context.multiline_text((0,top), rest_story_line, fill=self.text_color, font=text_maison_neue_book) # draw text
                         top += spacing
                     
-                    top += after_part
+            top += after_part
         
         del context # destroy drawing context
         img.save(self.filename + self.fileformat, "PNG")

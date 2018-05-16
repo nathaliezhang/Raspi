@@ -83,8 +83,7 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
                 nb_lines += len(rest_story_lines)
         nb_lines += 1
         nb_parts += 1
-    
-    
+
     height = top + before + title_margin_bottom + nb_lines * spacing + nb_parts * after_part + images_height + font_effects_height + bottom - nb_subparts * (after_part - spacing) - after_part + spacing
     return height
             
@@ -173,7 +172,7 @@ def two_fonts(width, start_sentence, first_font, first_font_size, second_font, s
 
 
 def space_between(width, start_sentence, font, font_size, spacing, text_color, top, context = False):
-    effect_top = top
+    effect_top = top + 5
     height = 0
     text_font = ImageFont.truetype(font, font_size, encoding="unic")
     
@@ -190,6 +189,7 @@ def space_between(width, start_sentence, font, font_size, spacing, text_color, t
 
 def word_in_sentence(width, start_sentence, first_font, first_font_size, second_fond, second_font_size, text_color, top, context = False):
     
+    effect_top = top + 10
     text_first_font = ImageFont.truetype(first_font, first_font_size, encoding="unic")
     text_second_font = ImageFont.truetype(second_fond, second_font_size, encoding="unic")
                         
@@ -197,11 +197,11 @@ def word_in_sentence(width, start_sentence, first_font, first_font_size, second_
     if len(words) == 2:
         # first word
         first_word_width, first_word_height = text_first_font.getsize(words[0] + ' ') # get text width
-        if context : context.text((0,top), words[0], fill=text_color, font=text_first_font) # draw text
+        if context : context.text((0, effect_top), words[0], fill=text_color, font=text_first_font) # draw text
                             
         # second word
         second_word_width, second_word_height = text_second_font.getsize(words[1]) # get text width
-        if context : context.text((first_word_width,top - 35), words[1], fill=text_color, font=text_second_font) # draw text
+        if context : context.text((first_word_width, effect_top - 35), words[1], fill=text_color, font=text_second_font) # draw text
         left = first_word_width + second_word_width
         
     return left
