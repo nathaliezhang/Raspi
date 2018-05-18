@@ -3,7 +3,7 @@
 
 from PIL import Image, ImageFont
 import textwrap
-
+import storydesign
 
 
 # fonts
@@ -14,7 +14,8 @@ maison_neue_book = 'assets/fonts/Maison-Neue/Maison Neue Book.otf'
 maison_neue_bold = 'assets/fonts/Maison-Neue/Maison Neue Bold.otf'
 
 def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top, spacing, title_margin_bottom, before, after_part, bottom):
-        
+    
+    paper = storydesign.StoryDesign()
     nb_lines = 0
     nb_parts = 0
     nb_subparts = 0
@@ -25,73 +26,79 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
     title_lines = textwrap.wrap(title, width=28)
     nb_lines += len(title_lines)
         
-    for story_part in story_parts: # nb parts
-    
+    for index, story_part in enumerate(story_parts): # nb parts
+       
         # detect custom words
-        for expression in custom_words:
+        ordered_custom_words = paper.get_part_custom_words (story_parts, index)
+        
+        for expression in ordered_custom_words:
             begin = story_part.find(expression)
-            if begin >= 0: #has the expression
-                end = begin + len(expression)
-                    
-                start_sentence = story_part[begin:end + 1].strip() # custom words
-                if start_sentence.find(","): start_sentence = start_sentence[0:len(start_sentence) - 1] #suctract ,
+            end = begin + len(expression)
                 
-                if start_sentence == "Il était une fois":
-                    if onceupon_effect == 1:
-                        height = two_fonts(width, start_sentence, editor_regular, 35, maison_neue_book, 20, spacing + 10, "#000", top)
-                    elif onceupon_effect == 2:
-                        height = mirror_font(width, start_sentence, editor_regular, 30, spacing -5, "#000", top)            
-                    font_effects_height += height
+            start_sentence = story_part[begin:end + 1].strip() # custom words
+            if start_sentence.find(","): start_sentence = start_sentence[0:len(start_sentence) - 1] #suctract ,
+            
+            if start_sentence == "Il était une fois":
+                if onceupon_effect == 1:
+                    height = two_fonts(width, start_sentence, editor_regular, 35, maison_neue_book, 20, spacing + 10, "#000", top)
+                elif onceupon_effect == 2:
+                    height = mirror_font(width, start_sentence, editor_regular, 30, spacing -5, "#000", top)            
+                font_effects_height += height
+            
+            elif start_sentence == "Tout à coup" or start_sentence == 'Soudain':
+                font_effects_height += spacing * 2 + 15
                 
-                elif start_sentence == "Tout à coup" or start_sentence == 'Soudain':
-                    font_effects_height += spacing * 2 + 15
-                    
-                elif start_sentence == "C'est alors":
-                    height = effects.space_between(width, start_sentence, maison_neue_book, 25, spacing - 25, "#000", top, context)
-                    font_effects_height += height + 5
-                    
-                elif start_sentence == "Un jour":
-                    font_effects_height += spacing + 10
-                    
-                elif start_sentence == "Ensuite":
-                    font_effects_height += spacing
+            elif start_sentence == "C'est alors":
+                height = effects.space_between(width, start_sentence, maison_neue_book, 25, spacing - 25, "#000", top, context)
+                font_effects_height += height + 5
                 
-                elif start_sentence == "Malheureusement":
-                    height = decrease_syllale(width, start_sentence, maison_neue_book, 28, spacing, "#000", top)
-                    font_effects_height += height
-                        
+            elif start_sentence == "Un jour":
+                font_effects_height += spacing + 10
+                
+            elif start_sentence == "Ensuite":
+                font_effects_height += spacing
+            
+            elif start_sentence == "Malheureusement":
+                height = decrease_syllale(width, start_sentence, maison_neue_book, 28, spacing, "#000", top)
+                font_effects_height += height
+            
+            #elif start_sentence == "De temps en temps":
+                #height = effects.increase_decrease(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, 1)[2]
+                #top += height 
+            
+                    
 ##                # get the images height for drawImage
 ##                if start_sentence == "Puis":
 ##                    img_height = add_image("assets/img/mountains.jpg", False)
 ##                    images_height += img_height
-                        
-                #rest of the sentence
-                end_sentence = story_part[end + 1:len(story_part)].strip()
                     
-                # has a custom word in the previous end_send that has a custom word
-                for expression in custom_words:
-                    if end_sentence.find(expression) >= 0: # if end_entence contain à custom word : cut
-                        end_twice = end_sentence.find(expression)
-                        end_sentence = end_sentence[0:end_twice].strip()
-                        rest_end_sentence = textwrap.wrap(end_sentence, width=28)
-                        nb_lines += len(rest_end_sentence)
-                        nb_subparts += 1
-                        break
-                    
-                # get the first sentence
-                index_end_first_sentence = end_sentence.find('.', 0, len(end_sentence))
-                first_sentence = end_sentence[0:index_end_first_sentence + 1]
-                rest_sentences = end_sentence[index_end_first_sentence + 1:len(end_sentence)].strip()
-                    
-                first_story_lines = textwrap.wrap(first_sentence, width=28)
-                rest_story_lines = textwrap.wrap(rest_sentences, width=28)
-                    
-                nb_lines += len(first_story_lines)
-                nb_lines += len(rest_story_lines)
+            #rest of the sentence
+            end_sentence = story_part[end + 1:len(story_part)].strip()
+                
+            # has a custom word in the previous end_send that has a custom word
+            for expression in ordered_custom_words:
+                if end_sentence.find(expression) >= 0: # if end_entence contain à custom word : cut
+                    end_twice = end_sentence.find(expression)
+                    end_sentence = end_sentence[0:end_twice].strip()
+                    rest_end_sentence = textwrap.wrap(end_sentence, width=28)
+                    nb_lines += len(rest_end_sentence)
+                    nb_subparts += 1
+                    break
+                
+            # get the first sentence
+            index_end_first_sentence = end_sentence.find('.', 0, len(end_sentence))
+            first_sentence = end_sentence[0:index_end_first_sentence + 1]
+            rest_sentences = end_sentence[index_end_first_sentence + 1:len(end_sentence)].strip()
+                
+            first_story_lines = textwrap.wrap(first_sentence, width=28)
+            rest_story_lines = textwrap.wrap(rest_sentences, width=28)
+                
+            nb_lines += len(first_story_lines)
+            nb_lines += len(rest_story_lines)
         nb_lines += 1
         nb_parts += 1
 
-    height = top + before + title_margin_bottom + nb_lines * spacing + nb_parts * after_part + images_height + font_effects_height + bottom - nb_subparts * (after_part - spacing) - after_part + spacing
+    height = top + before + title_margin_bottom + nb_lines * spacing + nb_parts * after_part + images_height + font_effects_height + bottom - nb_subparts * (spacing - 5) - after_part
     return height
             
     
@@ -208,7 +215,7 @@ def word_in_sentence(width, start_sentence, first_font, first_font_size, second_
                             
         # second word
         second_word_width, second_word_height = text_second_font.getsize(words[1]) # get text width
-        if context : context.text((first_word_width, effect_top - 35), words[1], fill=text_color, font=text_second_font) # draw text
+        if context : context.text((first_word_width, effect_top - 20), words[1], fill=text_color, font=text_second_font) # draw text
         left = first_word_width + second_word_width
         
     return left
@@ -316,6 +323,65 @@ def decrease_syllale(width, start_sentence, font, font_size, spacing, text_color
         height += spacing / 2
         
     return height
+
+
+# TODO : optimise -> retrieve value for the second part instead of re-init with new one when call the function + calculate paper height
+def increase_decrease(width, start_sentence, font, font_size, spacing, text_color, top, part_number, left = 0, context = False):
+
+    effect_top = top
+    height = 0
+    result = []
+    center_left_one = center_left_two = left
+    text_font = ImageFont.truetype(font, font_size, encoding="unic")
+    font_diff = 4
+    font_size_one = font_size + 5
+
+    if start_sentence == "De temps en temps":
+        parts = ["De temps", "en temps"]
+        
+        for index, part in enumerate(parts):
+            words = part.upper().split(" ")
+            
+            if index % 2 == 0:
+                if part_number == 1:
+                    
+                    word_width, word_height = text_font.getsize(words[0] + ' ')
+                    if context: context.text((center_left_one, effect_top), words[0], fill=text_color, font=text_font)
+                    center_left_one += word_width
+                    
+                    letters = list(words[1])
+                    for letter in letters:
+                        text_font = ImageFont.truetype(font, font_size_one, encoding="unic")
+                        letter_width, letter_height = text_font.getsize(letter) # redo after uppercase center text
+                        if center_left_one != 0:
+                            if context: context.text((center_left_one, effect_top), letter, fill=text_color, font=text_font)
+                        center_left_one += letter_width
+                        font_size_one += font_diff
+                        effect_top -= font_diff
+                    height += word_height + spacing # text below
+                    
+            else:
+                if part_number == 2:
+                
+                    word_width, word_height = text_font.getsize(words[0] + ' ')
+                    effect_top += word_height + spacing # text below
+                    if context: context.text((center_left_two, effect_top), words[0], fill=text_color, font=text_font)
+                    center_left_two += word_width
+                    
+                    letters = list(words[1])
+                    for letter in letters:
+                        text_font = ImageFont.truetype(font, font_size_one + font_diff * len(words[1]), encoding="unic")
+                        letter_width, letter_height = text_font.getsize(letter) # redo after uppercase center text
+                        if center_left_two != 0:
+                            if context: context.text((center_left_two, effect_top - font_diff * len(words[1]) + 1), letter, fill=text_color, font=text_font)
+                        center_left_two += letter_width
+                        font_size_one -= font_diff
+                        effect_top += font_diff
+                    height += word_height + spacing
+
+    result.extend([center_left_one, center_left_two, height])
+    return result           
+
     
 #get the font size of syllables to fulfil the paper width
 def get_font_size_syllables(width, syllables, font, font_size):
@@ -325,7 +391,6 @@ def get_font_size_syllables(width, syllables, font, font_size):
     while left <= width:
                             
         for index, syllable in enumerate(syllables):
-                
             text_font = ImageFont.truetype(font, target_font_size, encoding="unic")
             word = syllable.upper()
             syllable_width, syllable_height = text_font.getsize(word)

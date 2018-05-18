@@ -28,12 +28,15 @@ class StoryDesign():
             "Un matin",
             "Soudain",
             "Tout à coup",
+            "Brusquement",
+            "Subitement",
             "Le lendemain",
             "Quelques heures plus tard",
             "Peu de temps après",
             "Puis",
             "Ensuite",
             "Peu après",
+            "De temps en temps",
             "C'est alors",
             "Heureusement",
             "Malheureusement",
@@ -122,13 +125,17 @@ class StoryDesign():
 		    top += height
 		    
 		elif start_sentence == "Un jour" or start_sentence == 'Un matin':
-		    effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rcontour, self.font_size + 45, self.text_color, top, context)
+		    effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rotate, self.font_size + 25, self.text_color, top, context)
 		   
 		# fonction to increase text in uppercase
-		elif start_sentence == "Tout à coup" or start_sentence == 'Soudain':
-		    custom_width = effects.increase_font(start_sentence, editor_bold, self.font_size + 5, self.text_color, top)
+		elif start_sentence == "Tout à coup" or start_sentence == 'Soudain' or start_sentence == 'Brusquement' or start_sentence == 'Subitement':
+		    font_size = self.font_size + 5
+		    custom_width = effects.increase_font(start_sentence, editor_bold, font_size, self.text_color, top)
+		    while custom_width > self.width:
+                        custom_width = effects.increase_font(start_sentence, editor_bold, font_size, self.text_color, top)
+                        font_size -= 1
 		    center_left = (self.width - custom_width) / 2;
-		    effects.increase_font(start_sentence, editor_bold, self.font_size + 5, self.text_color, top, center_left, context)
+		    effects.increase_font(start_sentence, editor_bold, font_size, self.text_color, top, center_left, context)
 		    top += 15
 		    
 		elif start_sentence == "Ensuite":
@@ -146,6 +153,19 @@ class StoryDesign():
 		    height = effects.decrease_syllale(self.width, start_sentence, maison_neue_book, self.font_size, spacing, self.text_color, top, context)
 		    top += height
 		     
+                elif start_sentence == "De temps en temps":
+                    left_one = effects.increase_decrease(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, 1)[0]
+                    left_two = effects.increase_decrease(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, 2)[1]
+
+                    height = effects.increase_decrease(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, 2)[2]
+                    center_left_one = (self.width - left_one) / 2;
+                    effects.increase_decrease(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, 1, center_left_one, context)
+                    
+                    center_left_two = (self.width - left_two) / 2;
+                    effects.increase_decrease(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, 2, center_left_two, context)
+
+                    top += height
+                    
 ##                    elif start_sentence == "Puis":
 ##                        # create fonction to load img
 ##                        img_height = effects.add_image("assets/img/mountains.jpg", True, top, img)
@@ -173,7 +193,7 @@ class StoryDesign():
 		first_story_lines = textwrap.wrap(first_sentence, width=28)
 		for first_story_line in first_story_lines:
 		    
-		    if start_sentence == "Soudain":
+		    if start_sentence == "Soudain" or start_sentence == 'Tout à coup' or start_sentence == 'Brusquement' or start_sentence == 'Subitement':
 			text_maison_neue_rotate = ImageFont.truetype(maison_neue_rotate, self.font_size + 5, encoding="unic")
 			line_width, line_height = text_maison_neue_rotate.getsize(first_story_line) # get text width
 			center_left = (self.width - line_width) / 2; # center text
@@ -181,7 +201,7 @@ class StoryDesign():
 			top -= 5 
 		    
 		    elif start_sentence == "Un jour":
-			left = effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rcontour, self.font_size + 45, self.text_color, top, False)
+			left = effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rotate, self.font_size + 25, self.text_color, top, False)
 			top = effects.paragraph_after_effect(first_sentence, 20, left, top + 10, spacing, self.text_color, text_maison_neue_book, context, True)
 			break
 			
