@@ -47,7 +47,7 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
                     font_effects_height += spacing * 2 + 15
                     
                 elif start_sentence == "C'est alors":
-                    height = effects.space_between(self.width, start_sentence, maison_neue_book, 25, spacing - 25, self.text_color, top, context)
+                    height = effects.space_between(width, start_sentence, maison_neue_book, 25, spacing - 25, "#000", top, context)
                     font_effects_height += height + 5
                     
                 elif start_sentence == "Un jour":
@@ -55,6 +55,10 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
                     
                 elif start_sentence == "Ensuite":
                     font_effects_height += spacing
+                
+                elif start_sentence == "Malheureusement":
+                    height = decrease_syllale(width, start_sentence, maison_neue_book, 28, spacing, "#000", top)
+                    font_effects_height += height
                         
 ##                # get the images height for drawImage
 ##                if start_sentence == "Puis":
@@ -287,7 +291,7 @@ def vertical_syllable_mirror(width, start_sentence, font, font_size, spacing, te
         
     return height
 
-def decrease_syllale(width, start_sentence, font, font_size, spacing, text_color, top, context):
+def decrease_syllale(width, start_sentence, font, font_size, spacing, text_color, top, context = False):
     
     effect_top = top
     left = 0
@@ -305,7 +309,7 @@ def decrease_syllale(width, start_sentence, font, font_size, spacing, text_color
         text_font = ImageFont.truetype(font, target_font_size - 2, encoding="unic")
         word = syllable.upper()
         syllable_width, syllable_height = text_font.getsize(word)
-        context.text((left, effect_top), word, fill=text_color, font=text_font)
+        if context: context.text((left, effect_top), word, fill=text_color, font=text_font)
         
         effect_top += spacing / 2          
         left += syllable_width
