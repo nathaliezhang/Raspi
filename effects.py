@@ -257,49 +257,83 @@ def paragraph_after_effect(first_sentence, first_line_width, left, top, spacing,
     return effect_top
 
 
-def vertical_mirror(width, start_sentence, font, font_size, spacing, text_color, top, context):
+def vertical_syllable_mirror(width, start_sentence, font, font_size, spacing, text_color, top, context):
+    
+    top_offset = spacing / 2
+    top += spacing - 15
+    left = 0
+    height = 0
 
     if start_sentence == "Heureusement":
-        top_offset = spacing / 2
-        top += spacing - 15
-        left = 0
-        height = 0
         syllables = ["Heu", "reu", "se", "ment"]
-        target_font_size = font_size
+        
                         
-        # find the font size
-        while left <= width:
-                            
-            for index, syllable in enumerate(syllables):
-                
-                text_font = ImageFont.truetype(font, target_font_size, encoding="unic")
-                word = syllable.upper()
-                syllable_width, syllable_height = text_font.getsize(word)
-                
-                left += syllable_width
-            target_font_size += 1
-                            
-            if left <= width: # init until condition is fulfil
-                left = 0
+    # find the font size
+    target_font_size = get_font_size_syllables(width, syllables, font, font_size)
                                    
-        # draw the text
-        left = 0
-        for index, syllable in enumerate(syllables):
+    # draw the text
+    for index, syllable in enumerate(syllables):
             
-            text_font = ImageFont.truetype(font, target_font_size - 2, encoding="unic")
+        text_font = ImageFont.truetype(font, target_font_size - 2, encoding="unic")
+        word = syllable.upper()
+        syllable_width, syllable_height = text_font.getsize(word)
+        if index % 2 == 0:
+            context.text((left, top), word, fill=text_color, font=text_font)
+        else:
+            context.text((left, top - top_offset), word, fill=text_color, font=text_font)
+                            
+        left += syllable_width
+        height = syllable_height
+        
+    return height
+
+def decrease_syllale(width, start_sentence, font, font_size, spacing, text_color, top, context):
+    
+    effect_top = top
+    left = 0
+    height = 0
+
+    if start_sentence == "Malheureusement":
+        syllables = ["Mal", "heu", "reu", "se", "ment"]
+        
+    # find the font size
+    target_font_size = get_font_size_syllables(width, syllables, font, font_size)
+                                   
+    # draw the text
+    for index, syllable in enumerate(syllables):
+            
+        text_font = ImageFont.truetype(font, target_font_size - 2, encoding="unic")
+        word = syllable.upper()
+        syllable_width, syllable_height = text_font.getsize(word)
+        context.text((left, effect_top), word, fill=text_color, font=text_font)
+        
+        effect_top += spacing / 2          
+        left += syllable_width
+        height += spacing / 2
+        
+    return height
+    
+#get the font size of syllables to fulfil the paper width
+def get_font_size_syllables(width, syllables, font, font_size):
+    left = 0
+    target_font_size = font_size
+    
+    while left <= width:
+                            
+        for index, syllable in enumerate(syllables):
+                
+            text_font = ImageFont.truetype(font, target_font_size, encoding="unic")
             word = syllable.upper()
             syllable_width, syllable_height = text_font.getsize(word)
-            if index % 2 == 0:
-                context.text((left, top), word, fill=text_color, font=text_font)
-            else:
-                context.text((left, top - top_offset), word, fill=text_color, font=text_font)
-                            
+                
             left += syllable_width
-            height = syllable_height
-        
-        return height
+        target_font_size += 1
+                            
+        if left <= width: # init until condition is fulfil
+            left = 0
             
-                    
+    return target_font_size
+
 def add_image(url, add, top = 0, img_bg = False):
     custom_img = Image.open(url)
     if add == True : img_bg.paste(custom_img, (0, top))

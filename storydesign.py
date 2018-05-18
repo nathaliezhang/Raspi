@@ -139,7 +139,11 @@ class StoryDesign():
                         top += height
                     
                     elif start_sentence == "Heureusement":
-                        height = effects.vertical_mirror(self.width, start_sentence, maison_neue_book, self.font_size, spacing, self.text_color, top, context)
+                        height = effects.vertical_syllable_mirror(self.width, start_sentence, maison_neue_book, self.font_size, spacing, self.text_color, top, context)
+                        top += height
+                        
+                    elif start_sentence == "Malheureusement":
+                        height = effects.decrease_syllale(self.width, start_sentence, maison_neue_book, self.font_size, spacing, self.text_color, top, context)
                         top += height
                          
 ##                    elif start_sentence == "Puis":
