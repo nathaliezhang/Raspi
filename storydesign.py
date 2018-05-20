@@ -72,7 +72,7 @@ class StoryDesign():
         title_margin_bottom = 120
         font_width, font_height = text_maison_neue_book.getsize(self.text)
         spacing = font_height + 5
-        before = bottom = 60
+        before = bottom = 50
         after_part = 100
         
         onceupon_effect = randint(1,2)
@@ -87,12 +87,13 @@ class StoryDesign():
         
         # draw title
         title_lines = textwrap.wrap(title, width=28)
+        top += before # space on the top of the paper
         for title_line in title_lines:
             custom_width, custom_height = text_maison_neue_bold.getsize(title_line) # get text width
             center_left = (self.width - custom_width) / 2; # center text
-            top += before # space on the top of the paper
             context.text((center_left,top), title_line, fill=self.text_color, font=text_maison_neue_bold)
-            top += title_margin_bottom #space before part
+            top += spacing
+        top += title_margin_bottom #space before part
             
 	
 	for index, story_part in enumerate(story_parts):
