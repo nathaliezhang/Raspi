@@ -61,11 +61,11 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
             elif start_sentence == "Malheureusement":
                 height = decrease_syllale(width, start_sentence, maison_neue_book, 28, spacing, "#000", top)
                 font_effects_height += height
-            
-            #elif start_sentence == "De temps en temps":
-                #height = effects.increase_decrease(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, 1)[2]
-                #top += height 
-            
+                
+            elif start_sentence == "De temps en temps":
+                height = increase_decrease(width, start_sentence, maison_neue_bold, 28, spacing, "#000", top, 2)[2]
+                font_effects_height += height
+                
                     
 ##                # get the images height for drawImage
 ##                if start_sentence == "Puis":
@@ -325,7 +325,6 @@ def decrease_syllale(width, start_sentence, font, font_size, spacing, text_color
     return height
 
 
-# TODO : optimise -> retrieve value for the second part instead of re-init with new one when call the function + calculate paper height
 def increase_decrease(width, start_sentence, font, font_size, spacing, text_color, top, part_number, left = 0, context = False):
 
     effect_top = top
@@ -333,6 +332,7 @@ def increase_decrease(width, start_sentence, font, font_size, spacing, text_colo
     result = []
     center_left_one = center_left_two = left
     text_font = ImageFont.truetype(font, font_size, encoding="unic")
+    
     font_diff = 4
     font_size_one = font_size + 5
 
@@ -344,43 +344,42 @@ def increase_decrease(width, start_sentence, font, font_size, spacing, text_colo
             
             if index % 2 == 0:
                 if part_number == 1:
-                    
-                    word_width, word_height = text_font.getsize(words[0] + ' ')
-                    if context: context.text((center_left_one, effect_top), words[0], fill=text_color, font=text_font)
-                    center_left_one += word_width
-                    
-                    letters = list(words[1])
-                    for letter in letters:
-                        text_font = ImageFont.truetype(font, font_size_one, encoding="unic")
-                        letter_width, letter_height = text_font.getsize(letter) # redo after uppercase center text
-                        if center_left_one != 0:
-                            if context: context.text((center_left_one, effect_top), letter, fill=text_color, font=text_font)
-                        center_left_one += letter_width
-                        font_size_one += font_diff
-                        effect_top -= font_diff
-                    height += word_height + spacing # text below
-                    
+                    results = manage_increase_decrease(part_number, words, font, font_size, text_font, spacing, text_color, effect_top, left, context)
+                    center_left_one = results[0]
             else:
                 if part_number == 2:
-                
-                    word_width, word_height = text_font.getsize(words[0] + ' ')
-                    effect_top += word_height + spacing # text below
-                    if context: context.text((center_left_two, effect_top), words[0], fill=text_color, font=text_font)
-                    center_left_two += word_width
-                    
-                    letters = list(words[1])
-                    for letter in letters:
-                        text_font = ImageFont.truetype(font, font_size_one + font_diff * len(words[1]), encoding="unic")
-                        letter_width, letter_height = text_font.getsize(letter) # redo after uppercase center text
-                        if center_left_two != 0:
-                            if context: context.text((center_left_two, effect_top - font_diff * len(words[1]) + 1), letter, fill=text_color, font=text_font)
-                        center_left_two += letter_width
-                        font_size_one -= font_diff
-                        effect_top += font_diff
+                    results = manage_increase_decrease(part_number, words, font, font_size, text_font, spacing, text_color, effect_top, left, context)
+                    center_left_two = results[0]
+                    word_height = results[1]
                     height += word_height + spacing
-
+    
     result.extend([center_left_one, center_left_two, height])
-    return result           
+    return result
+
+def manage_increase_decrease(part_number, words, font, font_size, text_font, spacing, text_color, effect_top, left, context):
+    
+    font_diff = 4
+    font_size_one = font_size + 5
+    result = []
+    
+    word_width, word_height = text_font.getsize(words[0] + ' ')
+    if part_number == 2: effect_top += word_height + spacing # text just below the effect first part 
+    if context: context.text((left, effect_top), words[0], fill=text_color, font=text_font)
+    left += word_width
+                    
+    letters = list(words[1])
+    for letter in letters:
+        if part_number == 1: text_font = ImageFont.truetype(font, font_size_one, encoding="unic")
+        elif part_number == 2 : text_font = ImageFont.truetype(font, font_size_one + font_diff * len(words[1]), encoding="unic")
+        letter_width, letter_height = text_font.getsize(letter) # redo after uppercase center text
+        if left != 0 and context:
+            if part_number == 1: context.text((left, effect_top), letter, fill=text_color, font=text_font)
+            elif part_number == 2: context.text((left, effect_top - font_diff * len(words[1]) + 1), letter, fill=text_color, font=text_font)
+        left += letter_width
+        font_size_one += font_diff
+        effect_top -= font_diff
+    result.extend([left, word_height])
+    return result
 
     
 #get the font size of syllables to fulfil the paper width

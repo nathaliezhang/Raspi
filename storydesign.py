@@ -127,7 +127,7 @@ class StoryDesign():
 		elif start_sentence == "Un jour" or start_sentence == 'Un matin':
 		    effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rotate, self.font_size + 25, self.text_color, top, context)
 		   
-		# fonction to increase text in uppercase
+		# fonction to increase text in uppercase and reduce font size if expression width > paper width
 		elif start_sentence == "Tout à coup" or start_sentence == 'Soudain' or start_sentence == 'Brusquement' or start_sentence == 'Subitement':
 		    font_size = self.font_size + 5
 		    custom_width = effects.increase_font(start_sentence, editor_bold, font_size, self.text_color, top)
