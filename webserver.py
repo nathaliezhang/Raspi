@@ -31,24 +31,29 @@ class Server(BaseHTTPRequestHandler):
 	length = int(self.headers['Content-Length'])
 	data = self.rfile.read(length) #retrieve a json string from the app
 	load_json = json.loads(data) # convert
-	story = load_json["text"]
-	title = load_json["title"]
-	quantity = load_json["quantity"]
 	
-	# run the command to print the image
-	paper = storydesign.StoryDesign()
-	filename = paper.filename
-	fileformat = paper.fileformat
-        paper.text_in_img(title, story)
-        print title
-        print story
-        
-        # print the quantity choose
-        copy = 0
-        while copy < quantity:
-            #os.system('lpr -o fit-to-page ' + filename + fileformat + '')
-            os.system('lpr ' + filename + fileformat + '')
-            copy += 1
+	
+	if load_json["action"] == "shutdown":
+            os.system('sudo shutdown -h now')
+        else:
+            story = load_json["text"]
+            title = load_json["title"]
+            quantity = load_json["quantity"]
+            
+            # run the command to print the image
+            paper = storydesign.StoryDesign()
+            filename = paper.filename
+            fileformat = paper.fileformat
+            paper.text_in_img(title, story)
+            print title
+            print story
+            
+            # print the quantity choose
+            copy = 0
+            while copy < quantity:
+                #os.system('lpr -o fit-to-page ' + filename + fileformat + '')
+                os.system('lpr ' + filename + fileformat + '')
+                copy += 1
 	
 	self.send_response(200) # return status
 	self.send_header('Content-type','text/html') # return header
