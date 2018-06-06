@@ -13,8 +13,9 @@ if sys.version[0] == '2':
 
 class StoryDesign():
     
+    end_random = randint(1,3)
+    
     def __init__(self):
-         self.end_random = ""
          self.text = ""
          self.filename = "assets/texts/story"
          self.fileformat = ".png"
@@ -234,9 +235,6 @@ class StoryDesign():
             top += after_part
 
         # add end
-        self.end_random = randint(1,3)
-        print "VAR END"
-        print self.end_random
         img_end_height = effects.add_image("assets/img/fin0"+ str(self.end_random) +".jpg", True, top_end, img)
         top_end += img_end_height
 

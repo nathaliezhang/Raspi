@@ -99,8 +99,8 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
         nb_parts += 1
         
     # add end
-    #print storydesign.end_random
-    img_end_height = add_image("assets/img/fin01.jpg", False)
+    end_random = storydesign.StoryDesign.end_random
+    img_end_height = add_image("assets/img/fin0"+ str(end_random) +".jpg", False)
     images_height += img_end_height
     
     # cut
