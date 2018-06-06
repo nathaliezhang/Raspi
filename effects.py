@@ -130,22 +130,25 @@ def two_fonts_title(width, title, regular_font, bold_font, spacing, text_color, 
         
     i = 0
     while i < len(title_parts):
-            
+        
         # get size
         title_parts[i] = title_parts[i].upper()
         small_custom_width, custom_height = text_proto_regular.getsize(title_parts[i]) # get text width
-                
+        
         if i + 1 < len(title_parts):
             title_parts[i + 1] = title_parts[i + 1].upper()
             large_custom_width, custom_height = text_proto_bold.getsize(title_parts[i+1]) # get text width
-                
-        total_left = small_custom_width + 15 + large_custom_width
-        random_left = randint(0, width - total_left)
+            total_left = small_custom_width + 15 + large_custom_width
+        else:
+            total_left = small_custom_width
+
+        center_left = (width - total_left) / 2
+        
             
         # draw
-        if context : context.text((random_left,top), title_parts[i], fill=text_color, font=text_proto_regular)
+        if context : context.text((center_left,top), title_parts[i], fill=text_color, font=text_proto_regular)
         if i + 1 < len(title_parts):
-            if context : context.text((random_left + small_custom_width + 15,top), title_parts[i+1], fill=text_color, font=text_proto_bold)
+            if context : context.text((center_left + small_custom_width + 15,top), title_parts[i+1], fill=text_color, font=text_proto_bold)
                 
         top += spacing  + height_spacing
         effect_height += spacing  + height_spacing
