@@ -97,7 +97,7 @@ class StoryDesign():
         top_end = 0
 	
 	for index, story_part in enumerate(story_parts):
-	    story_lines = textwrap.wrap(story_part, width=28)
+	    story_lines = textwrap.wrap(story_part, width=30)
 	    
 	    ordered_custom_words = self.get_part_custom_words(story_parts, index)
 	    
@@ -144,6 +144,9 @@ class StoryDesign():
 		    effects.increase_font(start_sentence, editor_bold, font_size, self.text_color, top, center_left, context)
 		    top += 15
 		    
+                elif start_sentence == "Puis":
+                    context.text((0, top), start_sentence, fill=self.text_color, font=text_maison_neue_book) # draw text
+                
 		elif start_sentence == "Ensuite":
 		    effects.line_between(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, context)
 		
@@ -195,7 +198,7 @@ class StoryDesign():
 		rest_sentences = end_sentence[index_end_first_sentence + 1:len(end_sentence)].strip()
 		
 		# center first sentence end or not
-		first_story_lines = textwrap.wrap(first_sentence, width=28)
+		first_story_lines = textwrap.wrap(first_sentence, width=30)
 		for first_story_line in first_story_lines:
 		    
 		    if start_sentence == "Soudain" or start_sentence == 'Tout à coup' or start_sentence == 'Brusquement' or start_sentence == 'Subitement':
@@ -213,8 +216,14 @@ class StoryDesign():
 		    elif start_sentence == "Ensuite":
 			left = effects.line_between(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, False)
 			top = effects.paragraph_after_effect(first_sentence, 15, left, top, spacing, self.text_color, text_maison_neue_book, context)
-			break                           
-			
+			break
+		    elif start_sentence == "Puis":
+                        word_width, word_height = text_maison_neue_book.getsize(start_sentence + " ") # get text width
+			top = effects.paragraph_after_effect(first_sentence, 28, word_width, top, spacing, self.text_color, text_maison_neue_book, context)
+			break
+		    elif start_sentence == "De temps en temps":
+			top = effects.paragraph_after_effect(first_sentence, 28, 0, top + spacing, spacing, self.text_color, text_maison_neue_book, context) - 2 * spacing / 3
+			break
 		    else:    
 			line_width, line_height = text_maison_neue_book.getsize(first_story_line) # get text width
 			center_left = (self.width - line_width) / 2; # center text
@@ -223,7 +232,7 @@ class StoryDesign():
 		top += spacing - 10
 		
 		# rest of the part
-		rest_story_lines = textwrap.wrap(rest_sentences, width=28)
+		rest_story_lines = textwrap.wrap(rest_sentences, width=30)
 		for rest_story_line in rest_story_lines:
 		    line_width, line_height = text_maison_neue_book.getsize(rest_story_line) # get text width
 		    context.multiline_text((0,top), rest_story_line, fill=self.text_color, font=text_maison_neue_book) # draw text
