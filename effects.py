@@ -4,6 +4,7 @@
 from PIL import Image, ImageFont
 import textwrap
 import storydesign
+from random import randint
 
 
 # fonts
@@ -12,6 +13,8 @@ editor_medium = 'assets/fonts/Editor/Editor-Medium.ttf'
 editor_bold = 'assets/fonts/Editor/Editor-Bold.ttf'
 maison_neue_book = 'assets/fonts/Maison-Neue/Maison Neue Book.otf'
 maison_neue_bold = 'assets/fonts/Maison-Neue/Maison Neue Bold.otf'
+proto_grotesk_regular = 'assets/fonts/ProtoGrotesk/ProtoGrotesk-Regular.otf'
+proto_grotesk_bold = 'assets/fonts/ProtoGrotesk/ProtoGrotesk-Bold.otf'
 
 def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top, spacing, title_margin_bottom, before, after_part, bottom):
     
@@ -98,6 +101,10 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
         nb_lines += 1
         nb_parts += 1
         
+    # add title
+    height = two_fonts_title(width, title, proto_grotesk_regular, proto_grotesk_bold, spacing, "#000", top)
+    font_effects_height += height
+    
     # add end
     end_random = storydesign.StoryDesign.end_random
     img_end_height = add_image("assets/img/fin0"+ str(end_random) +".jpg", False)
@@ -110,7 +117,43 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
     height = top + before + title_margin_bottom + nb_lines * spacing + nb_parts * after_part + images_height + font_effects_height + bottom - nb_subparts * (spacing - 5) - after_part
     return height
             
-    
+
+
+def two_fonts_title(width, title, regular_font, bold_font, spacing, text_color, top, context = False):
+        
+    effect_height = 0 
+    height_spacing = 15
+    title_parts = title.split(" ")
+        
+    text_proto_regular = ImageFont.truetype(regular_font, 20, encoding="unic")
+    text_proto_bold = ImageFont.truetype(bold_font, 40, encoding="unic")  
+        
+    i = 0
+    while i < len(title_parts):
+            
+        # get size
+        title_parts[i] = title_parts[i].upper()
+        small_custom_width, custom_height = text_proto_regular.getsize(title_parts[i]) # get text width
+                
+        if i + 1 < len(title_parts):
+            title_parts[i + 1] = title_parts[i + 1].upper()
+            large_custom_width, custom_height = text_proto_bold.getsize(title_parts[i+1]) # get text width
+                
+        total_left = small_custom_width + 15 + large_custom_width
+        random_left = randint(0, width - total_left)
+            
+        # draw
+        if context : context.text((random_left,top), title_parts[i], fill=text_color, font=text_proto_regular)
+        if i + 1 < len(title_parts):
+            if context : context.text((random_left + small_custom_width + 15,top), title_parts[i+1], fill=text_color, font=text_proto_bold)
+                
+        top += spacing  + height_spacing
+        effect_height += spacing  + height_spacing
+        i += 2
+        
+    return effect_height
+
+
 def increase_font(custom_word, font, font_size, text_color, top, left = 0, context = False):
         
     custom_word = custom_word.upper()

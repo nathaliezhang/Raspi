@@ -60,6 +60,8 @@ class StoryDesign():
         maison_neue_bold = 'assets/fonts/Maison-Neue/Maison Neue Bold.otf'
         maison_neue_rotate = 'assets/fonts/Maison-Neue/Maison-Neue-Rotate.otf'
         maison_neue_rcontour = 'assets/fonts/Maison-Neue/Maison-Neue-RContour.otf'
+        proto_grotesk_regular = 'assets/fonts/ProtoGrotesk/ProtoGrotesk-Regular.otf'
+        proto_grotesk_bold = 'assets/fonts/ProtoGrotesk/ProtoGrotesk-Bold.otf'
         
         text_maison_neue_book = ImageFont.truetype(maison_neue_book, self.font_size, encoding="unic")
         text_maison_neue_bold = ImageFont.truetype(maison_neue_bold, self.font_size, encoding="unic")
@@ -85,17 +87,13 @@ class StoryDesign():
         context = ImageDraw.Draw(img) #create a drawing context
         
 
-        # start to draw in the context
+        # START TO DRAW IN THE CONTEXT
         
         # draw title
-        title_lines = textwrap.wrap(title, width=28)
         top += before # space on the top of the paper
-        for title_line in title_lines:
-            custom_width, custom_height = text_maison_neue_bold.getsize(title_line) # get text width
-            center_left = (self.width - custom_width) / 2; # center text
-            context.text((center_left,top), title_line, fill=self.text_color, font=text_maison_neue_bold)
-            top += spacing
-        top += title_margin_bottom #space before part
+        height = effects.two_fonts_title(self.width, title, proto_grotesk_regular, proto_grotesk_bold, spacing, self.text_color, top, context)
+        top += height + title_margin_bottom #space before part
+        
         top_end = 0
 	
 	for index, story_part in enumerate(story_parts):
@@ -231,7 +229,7 @@ class StoryDesign():
 		    context.multiline_text((0,top), rest_story_line, fill=self.text_color, font=text_maison_neue_book) # draw text
 		    top += spacing
 		    
-            top_end = self.get_top_value(top) # get top value   
+            top_end = self.get_value(top) # get top value   
             top += after_part
 
         # add end
@@ -274,6 +272,6 @@ class StoryDesign():
     
     
     # get top value in a loop
-    def get_top_value (self, top):
+    def get_value (self, top):
         return top
      
