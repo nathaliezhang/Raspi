@@ -14,6 +14,7 @@ if sys.version[0] == '2':
 class StoryDesign():
     
     def __init__(self):
+         self.end_random = ""
          self.text = ""
          self.filename = "assets/texts/story"
          self.fileformat = ".png"
@@ -94,7 +95,7 @@ class StoryDesign():
             context.text((center_left,top), title_line, fill=self.text_color, font=text_maison_neue_bold)
             top += spacing
         top += title_margin_bottom #space before part
-            
+        top_end = 0
 	
 	for index, story_part in enumerate(story_parts):
 	    story_lines = textwrap.wrap(story_part, width=28)
@@ -124,6 +125,11 @@ class StoryDesign():
 		    elif onceupon_effect == 2:
 			height = effects.mirror_font(self.width, start_sentence, editor_regular, self.font_size + 5, spacing -5, self.text_color, top, context)            
 		    top += height
+		    
+		elif start_sentence == "Il y a bien longtemps":
+                    height = effects.two_fonts(self.width, start_sentence, editor_regular, self.font_size + 10, maison_neue_book, self.font_size - 4, spacing + 10, self.text_color, top, context)
+                    top += height
+                    
 		    
 		elif start_sentence == "Un jour" or start_sentence == 'Un matin':
 		    effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rotate, self.font_size + 25, self.text_color, top, context)
@@ -166,7 +172,6 @@ class StoryDesign():
                     effects.increase_decrease(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, 2, center_left_two, context)
 
                     top += height
-                    
 ##                    elif start_sentence == "Puis":
 ##                        # create fonction to load img
 ##                        img_height = effects.add_image("assets/img/mountains.jpg", True, top, img)
@@ -224,8 +229,20 @@ class StoryDesign():
 		    line_width, line_height = text_maison_neue_book.getsize(rest_story_line) # get text width
 		    context.multiline_text((0,top), rest_story_line, fill=self.text_color, font=text_maison_neue_book) # draw text
 		    top += spacing
-                    
+		    
+            top_end = self.get_top_value(top) # get top value   
             top += after_part
+
+        # add end
+        self.end_random = randint(1,3)
+        print "VAR END"
+        print self.end_random
+        img_end_height = effects.add_image("assets/img/fin0"+ str(self.end_random) +".jpg", True, top_end, img)
+        top_end += img_end_height
+
+        # cut
+        img_cut_height = effects.add_image("assets/img/cut.jpg", True, top_end, img)
+
         
         del context # destroy drawing context
         img.save(self.filename + self.fileformat, "PNG")
@@ -256,4 +273,9 @@ class StoryDesign():
             ordered_words.append(custom_word[1])
 
         return ordered_words
+    
+    
+    # get top value in a loop
+    def get_top_value (self, top):
+        return top
      

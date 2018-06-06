@@ -97,6 +97,15 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
             nb_lines += len(rest_story_lines)
         nb_lines += 1
         nb_parts += 1
+        
+    # add end
+    #print storydesign.end_random
+    img_end_height = add_image("assets/img/fin01.jpg", False)
+    images_height += img_end_height
+    
+    # cut
+    img_cut_height = add_image("assets/img/cut.jpg", False)
+    images_height += img_cut_height
 
     height = top + before + title_margin_bottom + nb_lines * spacing + nb_parts * after_part + images_height + font_effects_height + bottom - nb_subparts * (spacing - 5) - after_part
     return height
@@ -164,15 +173,19 @@ def two_fonts(width, start_sentence, first_font, first_font_size, second_font, s
     first_text_font = ImageFont.truetype(first_font, first_font_size, encoding="unic")
     second_text_font = ImageFont.truetype(second_font, second_font_size, encoding="unic")
     
-    words = start_sentence.split(" ", 2)
-    part_one = (words[0] + ' ' + words[1]).upper()
+    if start_sentence == "Il était une fois":
+        words = start_sentence.split(" ", 2)
+        part_one = (words[0] + ' ' + words[1]).upper() #manage latin caracter "é"
+    elif start_sentence == "Il y a bien longtemps":
+        words = ["Il y a", "bien lontemps"]
+        part_one = words[0].upper()
     part_one_width, part_one_height = first_text_font.getsize(part_one)
     first_center_left = (width - part_one_width) / 2
     if context : context.text((first_center_left,effect_top), part_one, fill=text_color, font=first_text_font)
     effect_top += spacing
     height += spacing
     
-    part_two = words[2].upper()
+    part_two = words[1].upper()
     part_two_width, part_two_height = second_text_font.getsize(part_two)
     second_center_left = (width - part_two_width) / 2
     if context : context.text((second_center_left,effect_top), part_two, fill=text_color, font=second_text_font)
