@@ -24,29 +24,26 @@ class StoryDesign():
          self.font_size = 28
          self.text_color = "#000"
          self.custom_words = [
-            "Il était une fois",
-            "C'est l'histoire",
-            "Il y a bien longtemps",
+            "Il était une fois", "Il y a bien longtemps",
             "Un matin",
-            "Soudain",
-            "Tout à coup",
-            "Brusquement",
-            "Subitement",
+            "Soudain", "Tout à coup", "Brusquement", "Subitement",
             "Le lendemain",
             "Quelques heures plus tard",
             "Peu de temps après",
-            "Puis",
-            "Ensuite",
+            "Puis", "Ensuite",
             "Peu après",
             "De temps en temps",
-            "C'est alors",
-            "Heureusement",
-            "Malheureusement",
-            "Et c'est ainsi",
-            "Depuis ce jour",
+            "Heureusement", "Malheureusement",
+            "Et c'est ainsi", "Depuis ce jour",
             "Un jour",
-            "Désormais"
-        ]
+            "Désormais"]
+         self.imposed_events = [
+             "C'est alors que des météorites tombèrent du ciel.",
+             "C'est alors qu'une tornade effroyable éclata.",
+             "C'est alors qu'une guerrière apparut",
+             "C'est alors qu'un sorcier surgit de nulle part,",
+             "C'est alors qu'une plante se mit à pousser tellement haut qu'on en voyait plus la fin !"]
+        
     
     def text_in_img(self, title, story):
     
@@ -111,7 +108,6 @@ class StoryDesign():
 		custom_width, custom_height = text_maison_neue_bold.getsize(start_sentence) # get text width
 		center_left = (self.width - custom_width) / 2; # center text
 		
-		
 		# check if have a custom word in this paragraph
 		if start_sentence.find(",") >= 0:
 		    start_sentence = start_sentence[0:len(start_sentence) - 1] # suctract "," to detect the word
@@ -150,9 +146,9 @@ class StoryDesign():
 		elif start_sentence == "Ensuite":
 		    effects.line_between(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, context)
 		
-		elif start_sentence == "C'est alors":
-		    height = effects.space_between(self.width, start_sentence, maison_neue_book, self.font_size, spacing - 25, self.text_color, top, context)
-		    top += height
+##		elif start_sentence == "C'est alors":
+##		    height = effects.space_between(self.width, start_sentence, maison_neue_book, self.font_size, spacing - 25, self.text_color, top, context)
+##		    top += height
 		
 		elif start_sentence == "Heureusement":
 		    height = effects.vertical_syllable_mirror(self.width, start_sentence, maison_neue_book, self.font_size, spacing, self.text_color, top, context)
@@ -174,6 +170,7 @@ class StoryDesign():
                     effects.increase_decrease(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, 2, center_left_two, context)
 
                     top += height
+                    
 ##                    elif start_sentence == "Puis":
 ##                        # create fonction to load img
 ##                        img_height = effects.add_image("assets/img/mountains.jpg", True, top, img)
@@ -200,6 +197,10 @@ class StoryDesign():
 		# center first sentence end or not
 		first_story_lines = textwrap.wrap(first_sentence, width=30)
 		for first_story_line in first_story_lines:
+                    
+##                    for event in self.imposed_events:
+##                        if rest_sentences.find(event):
+##                            print event
 		    
 		    if start_sentence == "Soudain" or start_sentence == 'Tout à coup' or start_sentence == 'Brusquement' or start_sentence == 'Subitement':
 			text_maison_neue_rotate = ImageFont.truetype(maison_neue_rotate, self.font_size + 5, encoding="unic")
@@ -224,6 +225,14 @@ class StoryDesign():
 		    elif start_sentence == "De temps en temps":
 			top = effects.paragraph_after_effect(first_sentence, 28, 0, top + spacing, spacing, self.text_color, text_maison_neue_book, context) - 2 * spacing / 3
 			break
+		    elif start_sentence == "Malheureusement":
+                        word_width, word_height = text_maison_neue_book.getsize(start_sentence.upper() + ",") # get text width
+			top = effects.paragraph_after_effect(first_sentence, 10, word_width, top + spacing, spacing, self.text_color, text_maison_neue_book, context) - 2 * spacing / 3
+			break
+		    elif start_sentence == "Heureusement":
+                        word_width, word_height = text_maison_neue_book.getsize(start_sentence.upper() + ",") # get text width
+			top = effects.paragraph_after_effect(first_sentence, 15, word_width, top + spacing, spacing, self.text_color, text_maison_neue_book, context) - 2 * spacing / 3
+			break
 		    else:    
 			line_width, line_height = text_maison_neue_book.getsize(first_story_line) # get text width
 			center_left = (self.width - line_width) / 2; # center text
@@ -231,12 +240,12 @@ class StoryDesign():
 		    top += spacing
 		top += spacing - 10
 		
-		# rest of the part
 		rest_story_lines = textwrap.wrap(rest_sentences, width=30)
 		for rest_story_line in rest_story_lines:
 		    line_width, line_height = text_maison_neue_book.getsize(rest_story_line) # get text width
 		    context.multiline_text((0,top), rest_story_line, fill=self.text_color, font=text_maison_neue_book) # draw text
 		    top += spacing
+	    
 		    
             top_end = self.get_value(top) # get top value   
             top += after_part

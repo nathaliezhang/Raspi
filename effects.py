@@ -51,9 +51,9 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
             elif start_sentence == "Tout à coup" or start_sentence == 'Soudain':
                 font_effects_height += spacing * 2 + 15
                 
-            elif start_sentence == "C'est alors":
-                height = effects.space_between(width, start_sentence, maison_neue_book, 25, spacing - 25, "#000", top, context)
-                font_effects_height += height + 5
+##            elif start_sentence == "C'est alors":
+##                height = effects.space_between(width, start_sentence, maison_neue_book, 25, spacing - 25, "#000", top, context)
+##                font_effects_height += height + 5
                 
             elif start_sentence == "Un jour":
                 font_effects_height += spacing + 10
@@ -339,12 +339,12 @@ def vertical_syllable_mirror(width, start_sentence, font, font_size, spacing, te
         
                         
     # find the font size
-    target_font_size = get_font_size_syllables(width, syllables, font, font_size)
+    #target_font_size = get_font_size_syllables(width, syllables, font, font_size)
                                    
     # draw the text
     for index, syllable in enumerate(syllables):
             
-        text_font = ImageFont.truetype(font, target_font_size - 2, encoding="unic")
+        text_font = ImageFont.truetype(font, font_size - 2, encoding="unic")
         word = syllable.upper()
         syllable_width, syllable_height = text_font.getsize(word)
         if index % 2 == 0:
@@ -353,7 +353,13 @@ def vertical_syllable_mirror(width, start_sentence, font, font_size, spacing, te
             context.text((left, top - top_offset), word, fill=text_color, font=text_font)
                             
         left += syllable_width
-        height = syllable_height
+        
+        # add comma
+        if index + 1 == len(syllables):
+            text_maison_neue_book = ImageFont.truetype(maison_neue_book, 28, encoding="unic")
+            if context : context.text((left, top - 2), ', ', fill=text_color, font=text_maison_neue_book)
+    
+        height = syllable_height - spacing
         
     return height
 
@@ -367,19 +373,23 @@ def decrease_syllale(width, start_sentence, font, font_size, spacing, text_color
         syllables = ["Mal", "heu", "reu", "se", "ment"]
         
     # find the font size
-    target_font_size = get_font_size_syllables(width, syllables, font, font_size)
+    #target_font_size = get_font_size_syllables(width, syllables, font, font_size)
                                    
     # draw the text
     for index, syllable in enumerate(syllables):
             
-        text_font = ImageFont.truetype(font, target_font_size - 2, encoding="unic")
+        text_font = ImageFont.truetype(font, font_size - 2, encoding="unic")
         word = syllable.upper()
         syllable_width, syllable_height = text_font.getsize(word)
         if context: context.text((left, effect_top), word, fill=text_color, font=text_font)
         
-        effect_top += spacing / 2          
+        effect_top += spacing / 4          
         left += syllable_width
-        height += spacing / 2
+        
+        # add comma
+        if index + 1 == len(syllables):
+            text_maison_neue_book = ImageFont.truetype(maison_neue_book, 28, encoding="unic")
+            if context : context.text((left, effect_top - 4), ', ', fill=text_color, font=text_maison_neue_book)
         
     return height
 
