@@ -24,7 +24,7 @@ class StoryDesign():
          self.font_size = 28
          self.text_color = "#000"
          self.custom_words = [
-            "Il était une fois", "Il y a bien longtemps",
+            "Il était une fois", "Il y a bien longtemps", "Il fut un temps",
             "Un matin",
             "Soudain", "Tout à coup", "Brusquement", "Subitement",
             "Le lendemain",
@@ -34,9 +34,8 @@ class StoryDesign():
             "Peu après",
             "De temps en temps",
             "Heureusement", "Malheureusement",
-            "Et c'est ainsi", "Depuis ce jour",
-            "Un jour",
-            "Désormais"]
+            "Et c'est ainsi", "Depuis ce jour", "Désormais",
+            "Un jour"]
          self.imposed_events = [
              "C'est alors que des météorites tombèrent du ciel.",
              "C'est alors qu'une tornade effroyable éclata.",
@@ -171,6 +170,10 @@ class StoryDesign():
 
                     top += height
                     
+                elif start_sentence == "Depuis ce jour":
+                    height = effects.since(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, context)
+                    top += height
+                    
 ##                    elif start_sentence == "Puis":
 ##                        # create fonction to load img
 ##                        img_height = effects.add_image("assets/img/mountains.jpg", True, top, img)
@@ -213,10 +216,9 @@ class StoryDesign():
 			left = effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rotate, self.font_size + 25, self.text_color, top, False)
 			top = effects.paragraph_after_effect(first_sentence, 20, left, top + 10, spacing, self.text_color, text_maison_neue_book, context, True)
 			break
-			
 		    elif start_sentence == "Ensuite":
 			left = effects.line_between(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, False)
-			top = effects.paragraph_after_effect(first_sentence, 15, left, top, spacing, self.text_color, text_maison_neue_book, context)
+			top = effects.paragraph_after_effect(first_sentence, 15, left + 10, top, spacing, self.text_color, text_maison_neue_book, context)
 			break
 		    elif start_sentence == "Puis":
                         word_width, word_height = text_maison_neue_book.getsize(start_sentence + " ") # get text width
@@ -232,6 +234,10 @@ class StoryDesign():
 		    elif start_sentence == "Heureusement":
                         word_width, word_height = text_maison_neue_book.getsize(start_sentence.upper() + ",") # get text width
 			top = effects.paragraph_after_effect(first_sentence, 15, word_width, top + spacing, spacing, self.text_color, text_maison_neue_book, context) - 2 * spacing / 3
+			break
+                    elif start_sentence == "Depuis ce jour":
+                        word_width, word_height = text_maison_neue_bold.getsize(start_sentence.upper()) # get text width
+			top = effects.paragraph_after_effect(first_sentence, 10, word_width - 15, top - spacing, spacing, self.text_color, text_maison_neue_book, context) - 2 * spacing / 3
 			break
 		    else:    
 			line_width, line_height = text_maison_neue_book.getsize(first_story_line) # get text width
@@ -260,6 +266,8 @@ class StoryDesign():
         
         del context # destroy drawing context
         img.save(self.filename + self.fileformat, "PNG")
+        
+        #img.rotate(180).save(self.filename + self.fileformat, "PNG")
         
         
     def get_part_custom_words (self, story_parts, num_part):

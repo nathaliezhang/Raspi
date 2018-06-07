@@ -68,7 +68,10 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
             elif start_sentence == "De temps en temps":
                 height = increase_decrease(width, start_sentence, maison_neue_bold, 28, spacing, "#000", top, 2)[2]
                 font_effects_height += height
-                
+            
+            elif start_sentence == "Depuis ce jour":
+                height = since(width, start_sentence, maison_neue_bold, 28, spacing, "#000", top)
+                font_effects_height += height
                     
 ##                # get the images height for drawImage
 ##                if start_sentence == "Puis":
@@ -470,6 +473,34 @@ def get_font_size_syllables(width, syllables, font, font_size):
             left = 0
             
     return target_font_size
+
+
+def since(width, expression, font, font_size, spacing, text_color, top, context = False):
+    effect_top = top
+    height = 0
+    text_font = ImageFont.truetype(font, font_size, encoding="unic")
+    
+    if expression == "Depuis ce jour":
+        words = expression.split(" ", 1)
+        first_part = words[0].upper()
+        second_part = words[1].upper()
+        
+        first_part_width, first_part_height = text_font.getsize(first_part)
+        if context : context.text((0, effect_top), first_part , fill=text_color, font=text_font)
+        effect_top += spacing
+        
+        left = 2 * first_part_width / 3
+        second_part_width, second_part_height = text_font.getsize(first_part)
+        if context : context.text((left, effect_top), second_part , fill=text_color, font=text_font)
+        
+        # add comma
+        text_maison_neue_book = ImageFont.truetype(maison_neue_book, 28, encoding="unic")
+        comma_left = left + second_part_width + 15
+        if context : context.text((comma_left, effect_top - 2), ', ', fill=text_color, font=text_maison_neue_book)
+        
+        height = 2 * spacing
+    return height
+    
 
 def add_image(url, add, top = 0, img_bg = False):
     custom_img = Image.open(url)
