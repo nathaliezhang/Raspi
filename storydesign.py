@@ -167,11 +167,16 @@ class StoryDesign():
                     
                     center_left_two = (self.width - left_two) / 2;
                     effects.increase_decrease(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, 2, center_left_two, context)
-
+                    
                     top += height
+                    
                     
                 elif start_sentence == "Depuis ce jour":
                     height = effects.since(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, context)
+                    top += height
+                    
+                elif start_sentence == "Désormais":
+                    height = effects.random_height(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, context)
                     top += height
                     
 ##                    elif start_sentence == "Puis":
@@ -239,6 +244,10 @@ class StoryDesign():
                         word_width, word_height = text_maison_neue_bold.getsize(start_sentence.upper()) # get text width
 			top = effects.paragraph_after_effect(first_sentence, 10, word_width - 15, top - spacing, spacing, self.text_color, text_maison_neue_book, context) - 2 * spacing / 3
 			break
+                    elif start_sentence == "Désormais":
+                        word_width, word_height = text_maison_neue_bold.getsize(start_sentence.upper()) # get text width
+			top = effects.paragraph_after_effect(first_sentence, 15, word_width + 20, top - 2 * spacing / 3, spacing, self.text_color, text_maison_neue_book, context) - 2 * spacing / 3
+                        break
 		    else:    
 			line_width, line_height = text_maison_neue_book.getsize(first_story_line) # get text width
 			center_left = (self.width - line_width) / 2; # center text

@@ -501,6 +501,31 @@ def since(width, expression, font, font_size, spacing, text_color, top, context 
         height = 2 * spacing
     return height
     
+    
+def random_height(width, expression, font, font_size, spacing, text_color, top, context = False):
+    effect_top = top + 10
+    height = 0
+    left = 0
+    text_font = ImageFont.truetype(font, font_size, encoding="unic")
+    
+    
+    letters = list(expression)
+    for index, letter in enumerate(letters):
+        letter = letter.upper()
+        effect_top += randint(-5, 5)
+        letter_width, letter_height = text_font.getsize(letter)
+        if context : context.text((left, effect_top), letter , fill=text_color, font=text_font)
+        left += letter_width
+        
+        # add comma
+        if index + 1 == len(letters):
+            text_maison_neue_book = ImageFont.truetype(maison_neue_book, 28, encoding="unic")
+            comma_left = left
+            if context : context.text((comma_left, effect_top - 2), ', ', fill=text_color, font=text_maison_neue_book)
+        
+        height = spacing
+    return height
+    
 
 def add_image(url, add, top = 0, img_bg = False):
     custom_img = Image.open(url)
