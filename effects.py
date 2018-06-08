@@ -578,6 +578,48 @@ def get_left_place(width, expression, story_part, top, font_size):
                 
     result.extend([left, top])
     return result
+
+
+def place_img_position(width, expression, spacing, font_size, text_color, top, left, context, img):
+    
+    if expression == "au coeur de la jungle.":
+        img_asset = "assets/img/jungle.jpg"
+    elif expression == "à l'orée d'une forêt.":
+        img_asset = "assets/img/forêt.jpg"
+    elif expression == "près d'une cascade.":
+        img_asset = "assets/img/cascade.jpg"
+    elif expression == "sur la lune.":
+        img_asset = "assets/img/lune.jpg"
+    
+    # place in the sentence
+    text_maison_neue_book = ImageFont.truetype(maison_neue_book, font_size, encoding="unic")
+    words = expression.split(" ")
+    for index, word in enumerate(words):
+        if index == len(words) - 1:
+            place_img = Image.open(img_asset)
+            img_width, img_height = place_img.size
+                            
+            if (left + img_width > width):
+                comma_left = img_width
+                if word != "cascade.":
+                    add_image(img_asset, True, top, img)
+                    context.text((comma_left, top), '.', fill=text_color, font=text_maison_neue_book)
+                else:
+                   add_image(img_asset, True, top + 5, img, 5) 
+            else:
+                comma_left = left + img_width
+                if word != "cascade.":
+                    add_image(img_asset, True, top - spacing, img, left)
+                    context.text((comma_left, top - spacing), '.', fill=text_color, font=text_maison_neue_book)
+                else:
+                    add_image(img_asset, True, top - spacing + 5, img, left + 5)
+        else :    
+            context.text((left,top - spacing), word, fill=text_color, font=text_maison_neue_book)
+            word_width, word_height = text_maison_neue_book.getsize(word)
+            left += word_width + 5
+            if (left + word_width) > width:
+                left = 0
+                top += spacing
     
 
 def add_image(url, add, top = 0, img_bg = False, left = 0):

@@ -143,86 +143,24 @@ class StoryDesign():
                             
                             
                 elif start_sentence == "à l'orée d'une forêt.":
-                    
                     left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[0]
                     top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[1]
-                            
-                    # place in the sentence
-                    words = start_sentence.split(" ")
-                    for word in words:
-                        if word == "forêt.":
-                            place_img = Image.open("assets/img/forêt.jpg")
-                            img_width, img_height = place_img.size
-                            comma_left = left + img_width
-                            
-                            if (left + img_width > self.width):
-                                effects.add_image("assets/img/forêt.jpg", True, top, img)
-                                context.text((comma_left, top), ', ', fill=self.text_color, font=text_maison_neue_book)
-                            else:
-                                effects.add_image("assets/img/forêt.jpg", True, top - spacing, img, left)
-                                context.text((comma_left, top - spacing), '.', fill=self.text_color, font=text_maison_neue_book)
-                        else :    
-                            context.text((left,top - spacing), word, fill=self.text_color, font=text_maison_neue_book)
-                            word_width, word_height = text_maison_neue_book.getsize(word)
-                            left += word_width + 5
-                            if (left + word_width) > self.width:
-                                left = 0
-                                top += spacing
+                    effects.place_img_position(self.width, start_sentence, spacing, self.font_size, self.text_color, top, left, context, img)
                 
                 elif start_sentence == "au coeur de la jungle.":
-                    
                     left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[0]
                     top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[1]
-                            
-                    # place in the sentence
-                    words = start_sentence.split(" ")
-                    for word in words:
-                        if word == "jungle.":
-                            place_img = Image.open("assets/img/jungle.jpg")
-                            img_width, img_height = place_img.size
-                            comma_left = left + img_width
-                            
-                            if (left + img_width > self.width):
-                                effects.add_image("assets/img/jungle.jpg", True, top, img)
-                                context.text((comma_left, top), ', ', fill=self.text_color, font=text_maison_neue_book)
-                            else:
-                                effects.add_image("assets/img/jungle.jpg", True, top - spacing, img, left)
-                                context.text((comma_left, top - spacing), '.', fill=self.text_color, font=text_maison_neue_book)
-                        else :    
-                            context.text((left,top - spacing), word, fill=self.text_color, font=text_maison_neue_book)
-                            word_width, word_height = text_maison_neue_book.getsize(word)
-                            left += word_width + 5
-                            if (left + word_width) > self.width:
-                                left = 0
-                                top += spacing
+                    effects.place_img_position(self.width, start_sentence, spacing, self.font_size, self.text_color, top, left, context, img)
                 
                 elif start_sentence == "près d'une cascade.":
-                    
                     left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[0]
                     top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[1]
-                            
-                    # place in the sentence
-                    words = start_sentence.split(" ")
-                    for word in words:
-                        if word == "cascade.":
-                            place_img = Image.open("assets/img/cascade.jpg")
-                            img_width, img_height = place_img.size
-                            comma_left = left + img_width
-                            
-                            if (left + img_width > self.width):
-                                effects.add_image("assets/img/cascade.jpg", True, top, img)
-                                context.text((comma_left, top), ', ', fill=self.text_color, font=text_maison_neue_book)
-                            else:
-                                effects.add_image("assets/img/cascade.jpg", True, top - spacing, img, left)
-                                context.text((comma_left, top - spacing), '.', fill=self.text_color, font=text_maison_neue_book)
-                        else :    
-                            context.text((left,top - spacing), word, fill=self.text_color, font=text_maison_neue_book)
-                            word_width, word_height = text_maison_neue_book.getsize(word)
-                            left += word_width + 5
-                            if (left + word_width) > self.width:
-                                left = 0
-                                top += spacing
-                        
+                    effects.place_img_position(self.width, start_sentence, spacing, self.font_size, self.text_color, top, left, context, img)
+                
+                elif start_sentence == "sur la lune.":
+                    left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[0]
+                    top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[1]
+                    effects.place_img_position(self.width, start_sentence, spacing, self.font_size, self.text_color, top, left, context, img)
 		    
 		elif start_sentence == "Un jour" or start_sentence == 'Un matin':
 		    effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rotate, self.font_size + 25, self.text_color, top, context)
