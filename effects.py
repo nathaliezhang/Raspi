@@ -546,7 +546,6 @@ def get_left_place(width, expression, story_part, top, font_size, spacing):
     left = 0
     result = []
     
-    print last
     if words[0] == "à": # particular case for 'à l'orée d'une forêt'
         first_word_second_last = re.search(r""+words[0]+r"\s", second_to_last)
     else :
@@ -563,8 +562,7 @@ def get_left_place(width, expression, story_part, top, font_size, spacing):
     # start to look in the second last part
     if first_word_second_last:
         first_position = first_word_second_last.start() # get position with space before : +1 delete space
-        print first_position
-        print second_word_second_last.start()
+        
         #find second word in the same part
         if second_word_second_last and second_word_second_last.start() > first_position:
             del_part = second_to_last[0:first_position]
@@ -642,7 +640,48 @@ def place_img_position(width, expression, spacing, font_size, text_color, top, l
             if (left + word_width) > width:
                 left = 0
                 top += spacing
+
     
+def imposed_event(width, expression, contour_word, top, font_bold, font_contour, font_size, after_part, spacing, text_color, context):
+    
+    text_event_bold = ImageFont.truetype(font_bold, font_size + 12, encoding="unic")
+    text_event_contour = ImageFont.truetype(font_contour, font_size + 5, encoding="unic")
+		    
+    words = expression.split(" ")
+    top += after_part
+    left = 0
+    effect_height = after_part
+		    
+    for word in words:
+        if word == 'météorites':
+            contour_word = u'météorites'.upper()
+        elif word == 'guerrière':
+            contour_word = u'guerrière'.upper()
+        
+        word = word.upper()
+        word_width, word_height = text_event_bold.getsize(word)
+                        
+        if left + word_width < width:
+        
+            if word == contour_word.upper():
+                context.text((left, top + 4), word, fill=text_color, font=text_event_contour) # draw text
+            else:
+                context.text((left, top), word, fill=text_color, font=text_event_bold) # draw text
+            left += word_width + 10
+        else:
+            top += spacing + 10
+            effect_height += spacing + 10
+            left = 0
+            if word == contour_word.upper():
+                context.text((left, top + 4), word, fill=text_color, font=text_event_contour) # draw text
+            else:
+                context.text((left, top), word, fill=text_color, font=text_event_bold) # draw text
+            left += word_width + 10
+ 
+    if contour_word == "sorcier" or contour_word == "tornade":
+        context.text((left - 10, top), '.', fill=text_color, font=text_event_bold) # draw text
+    
+    return effect_height
 
 def add_image(url, add, top = 0, img_bg = False, left = 0):
     custom_img = Image.open(url)

@@ -29,7 +29,16 @@ class StoryDesign():
             "Il était une fois", "Il y a bien longtemps", "Il fut un temps",
             "dans un coquillage", "au beau milieu d'un désert", "près d'une cascade", "sur la lune", "au coeur de la jungle", "à l'orée d'une forêt",
             "Soudain", "Tout à coup", "Brusquement", "Subitement",
-            #"C'est alors qu'un sorcier surgit de nulle part, tendit une cuillère avant de diparaitre à nouveau",
+            "C'est alors qu'un sorcier surgit de nulle part, tendit une cuillère avant de disparaitre à nouveau.",
+            "C'est alors qu'un sorcier surgit de nulle part, il jeta un sort et éclata de rire.",
+            "C'est alors que des météorites tombèrent du ciel. Elle créèrent d'énormes cratères en s'écrasant sur le sol !",
+            "C'est alors que des météorites tombèrent du ciel. Elles roulèrent et enflammèrent tout ce qui se trouvait aux alentours.",
+            "C'est alors qu'une tornade effroyable éclata. Le vent était si fort qu'il emportait tout sur son passage.",
+            "C'est alors qu'une tornade effroyable éclata. Par chance, elle ne dura pas très longtemps.",
+            "C'est alors qu'une guerrière apparut et proposa d'accompagner les personnages dans leur aventure.",
+            "C'est alors qu'une guerrière apparut et lança un défi : réussir à la battre à l'épée.",
+            "C'est alors qu'une plante se mit à pousser tellement haut qu'on en voyait plus la fin ! Le tronc était assez large pour grimper dessus.",
+            "C'est alors qu'une plante se mit à pousser tellement haut qu'on en voyait plus la fin ! La plante gênait le passage.", 
             "Puis", "Ensuite",
             "De temps en temps",
             "Heureusement", "Malheureusement", "Finalement",
@@ -55,6 +64,7 @@ class StoryDesign():
         maison_neue_bold = 'assets/fonts/Maison-Neue/Maison Neue Bold.otf'
         maison_neue_rotate = 'assets/fonts/Maison-Neue/Maison-Neue-Rotate.otf'
         maison_neue_rcontour = 'assets/fonts/Maison-Neue/Maison-Neue-RContour.otf'
+        maison_neue_contour = 'assets/fonts/Maison-Neue/MaisonContour.otf'
         proto_grotesk_regular = 'assets/fonts/ProtoGrotesk/ProtoGrotesk-Regular.otf'
         proto_grotesk_bold = 'assets/fonts/ProtoGrotesk/ProtoGrotesk-Bold.otf'
         
@@ -71,8 +81,8 @@ class StoryDesign():
         title_margin_bottom = 80
         font_width, font_height = text_maison_neue_book.getsize(self.text)
         spacing = font_height + 5
-        before = bottom = 50
-        after_part = 100
+        before = bottom = 100
+        after_part = 80
         
         onceupon_effect = randint(1,2)
         print onceupon_effect
@@ -104,7 +114,6 @@ class StoryDesign():
 		
 		# custom words 
 		start_sentence = story_part[begin:end + 1].strip() # space before @
-                print start_sentence
                 
                 custom_width, custom_height = text_maison_neue_bold.getsize(start_sentence) # get text width
                 center_left = (self.width - custom_width) / 2; # center text
@@ -183,23 +192,25 @@ class StoryDesign():
 		    effects.increase_font(start_sentence, editor_bold, font_size, self.text_color, top, center_left, context)
 		    top += 15
 		    
-##		elif start_sentence == "C'est alors qu'un sorcier surgit de nulle part, tendit une cuillère avant de diparaitre à nouveau":
-##                    
-##		    text_proto_grotesk_bold = ImageFont.truetype(proto_grotesk_bold, self.font_size + 5, encoding="unic")
-##		    words = start_sentence.split(" ")
-##		    top += 20
-##		    left = 0
-##		    
-##		    for word in words:
-##                        word = word.upper()
-##                        word_width, word_height = text_proto_grotesk_bold.getsize(word)
-##                        
-##                        context.text((left, top), word, fill=self.text_color, font=text_proto_grotesk_bold) # draw text
-##                        left += word_width + 10
-##                        if left > self.width:
-##                            left = 0
-##                            top += spacing + 5
-##                    top -= spacing
+		elif start_sentence == "C'est alors qu'un sorcier surgit de nulle part, tendit une cuillère avant de disparaitre à nouveau" or start_sentence == "C'est alors qu'un sorcier surgit de nulle part, il jeta un sort et éclata de rire":
+                    height = effects.imposed_event(self.width, start_sentence, "sorcier", top, maison_neue_bold, maison_neue_contour, self.font_size, after_part, spacing, self.text_color, context)
+		    top += height
+		
+		elif start_sentence == "C'est alors que des météorites tombèrent du ciel. Elle créèrent d'énormes cratères en s'écrasant sur le sol !" or start_sentence == "C'est alors que des météorites tombèrent du ciel. Elles roulèrent et enflammèrent tout ce qui se trouvait aux alentours.":
+                    height = effects.imposed_event(self.width, start_sentence, "météorites", top, maison_neue_bold, maison_neue_contour, self.font_size, after_part, spacing, self.text_color, context)
+		    top += height
+		    
+		elif start_sentence == "C'est alors qu'une tornade effroyable éclata. Le vent était si fort qu'il emportait tout sur son passage" or start_sentence == "C'est alors qu'une tornade effroyable éclata. Par chance, elle ne dura pas très longtemps":
+                    height = effects.imposed_event(self.width, start_sentence, "tornade", top, maison_neue_bold, maison_neue_contour, self.font_size, after_part, spacing, self.text_color, context)
+		    top += height
+		    
+                elif start_sentence == "C'est alors qu'une guerrière apparut et proposa d'accompagner les personnages dans leur aventure." or start_sentence == "C'est alors qu'une guerrière apparut et lança un défi : réussir à la battre à l'épée.":
+                    height = effects.imposed_event(self.width, start_sentence, "guerrière", top, maison_neue_bold, maison_neue_contour, self.font_size, after_part, spacing, self.text_color, context)
+		    top += height
+		    
+		elif start_sentence == "C'est alors qu'une plante se mit à pousser tellement haut qu'on en voyait plus la fin ! Le tronc était assez large pour grimper dessus." or start_sentence == "C'est alors qu'une plante se mit à pousser tellement haut qu'on en voyait plus la fin ! La plante gênait le passage.":
+                    height = effects.imposed_event(self.width, start_sentence, "plante", top, maison_neue_bold, maison_neue_contour, self.font_size, after_part, spacing, self.text_color, context)
+		    top += height
 		    
                 elif start_sentence == "Puis":
                     context.text((0, top), start_sentence, fill=self.text_color, font=text_maison_neue_book) # draw text
@@ -310,7 +321,11 @@ class StoryDesign():
 			center_left = (self.width - line_width) / 2; # center text
 			context.multiline_text((center_left,top), first_story_line, fill=self.text_color, font=text_maison_neue_book) # draw text
 		    top += spacing
-		top += spacing - 10
+		    
+		if start_sentence == "Soudain" or start_sentence == 'Tout à coup' or start_sentence == 'Brusquement' or start_sentence == 'Subitement':
+                    top += after_part
+                else:
+                    top += spacing - 10
 		
 		rest_story_lines = textwrap.wrap(rest_sentences, width=28)
 		for rest_story_line in rest_story_lines:
