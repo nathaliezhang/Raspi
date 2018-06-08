@@ -37,8 +37,8 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
         for expression in ordered_custom_words:
             begin = story_part.find(expression)
             end = begin + len(expression)
-                
-            start_sentence = story_part[begin:end + 1].strip() # custom words
+            start_sentence = story_part[begin:end + 1].strip() # custom word
+            
             if start_sentence.find(","): start_sentence = start_sentence[0:len(start_sentence) - 1] #suctract ,
             
             if start_sentence == "Il était une fois":
@@ -234,7 +234,10 @@ def two_fonts(width, start_sentence, first_font, first_font_size, second_font, s
     effect_top += spacing
     height += spacing
     
-    part_two = words[1].upper()
+    if start_sentence == "Il était une fois":
+        part_two = words[2].upper()
+    elif start_sentence == "Il y a bien longtemps":
+        part_two = words[1].upper()
     part_two_width, part_two_height = second_text_font.getsize(part_two)
     second_center_left = (width - part_two_width) / 2
     if context : context.text((second_center_left,effect_top), part_two, fill=text_color, font=second_text_font)
@@ -322,7 +325,7 @@ def paragraph_after_effect(first_sentence, first_line_width, left, top, spacing,
     context.text((left, effect_top - spacing), first_part, fill=text_color, font=text_font)
                             
     rest_part = first_sentence[len(sentences[0]):len(first_sentence)].strip()
-    rest_lines = textwrap.wrap(rest_part, width=28)
+    rest_lines = textwrap.wrap(rest_part, width=27)
     for rest_line in rest_lines:
         context.text((0, effect_top), rest_line, fill=text_color, font=text_font)
         effect_top += spacing
