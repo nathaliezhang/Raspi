@@ -27,31 +27,19 @@ class StoryDesign():
              "Il était une fois", "Il y a bien longtemps", "Il fut un temps"]
          self.custom_words = [
             "Il était une fois", "Il y a bien longtemps", "Il fut un temps",
-            "dans un coquillage", "au beau milieu d'un désert", "près d'une cascade", "sur la lune", "au coeur de la jungle", "à l'orée d'une fôret"
-            "Un matin",
+            "dans un coquillage", "au beau milieu d'un désert", "près d'une cascade", "sur la lune", "au coeur de la jungle", "à l'orée d'une forêt",
             "Soudain", "Tout à coup", "Brusquement", "Subitement",
-            "Le lendemain",
-            "Quelques heures plus tard",
-            "Peu de temps après",
             "Puis", "Ensuite",
-            "Peu après",
-            "Après cet événement", "Après cette aventure", "De temps en temps",
+            "De temps en temps",
             "Heureusement", "Malheureusement", "Finalement",
             "Et c'est ainsi", "Depuis ce jour", "Désormais",
-            "Un jour"]
+            "Un jour", "Un matin"]
          self.imposed_events = [
              "C'est alors que des météorites tombèrent du ciel.",
              "C'est alors qu'une tornade effroyable éclata.",
              "C'est alors qu'une guerrière apparut",
              "C'est alors qu'un sorcier surgit de nulle part,",
              "C'est alors qu'une plante se mit à pousser tellement haut qu'on en voyait plus la fin !"]
-         self.places = [
-             "dans un coquillage",
-             "au milieu du désert",
-             "près d'une cascade",
-             "sur la lune",
-             "au coeur de la jungle",
-             "à l'orée d'une fôret"]
         
     
     def text_in_img(self, title, story):
@@ -106,12 +94,6 @@ class StoryDesign():
 	    story_lines = textwrap.wrap(story_part, width=28)
 	    
 	    ordered_custom_words = self.get_part_custom_words(story_parts, index)
-	    
-##	    if index == 0:
-##                print story_part
-##                for index, place in enumerate(self.places):
-##                    if story_part.find(place) > 0: # find the correct place
-##                        print place
 	    
 	    # detect custom words
             for expression in ordered_custom_words:
@@ -176,8 +158,16 @@ class StoryDesign():
                             else :
                                 left = 0
                                 top += spacing
+                    
+                    # look in the first last part           
+                    elif last.find(words[0]) > -1:
+                        first_position = last.find(words[0])
+                        if last.find(words[2]) > 0 and last.find(words[2]) > first_position:
+                            del_part = last[0:first_position]
+                            del_part_width, del_part_height = text_maison_neue_book.getsize(del_part)
+                            left = del_part_width
                             
-                    # place sentence
+                    # place in the sentence
                     space = 30 * self.width / 100
                     for word in words:
                         context.text((left,top - spacing), word, fill=self.text_color, font=text_maison_neue_book)
@@ -185,7 +175,73 @@ class StoryDesign():
                         word_width, word_height = text_maison_neue_book.getsize(word)
                         if (left + word_width) > self.width:
                             left = 0
-                            top += spacing    
+                            top += spacing
+                            
+                            
+                elif start_sentence == "à l'orée d'une forêt.":
+                    words = start_sentence.split(" ")
+                    # cut sentence and delete first sentence
+                    rest_paragraph = story_part.split(". ", 1)
+                    
+                    # get last part width
+                    rest_lines = textwrap.wrap(rest_paragraph[1], width=28)
+                    array_length = len(rest_lines)
+                    second_to_last = rest_lines[array_length - 2]
+                    last = rest_lines[array_length - 1]
+                    print last
+                    left = 0
+                    
+                    # start to look at the second last part
+                    if second_to_last.find(words[0]) > -1:
+                        first_position = second_to_last.find(words[0])
+                        
+                        #find in the same part
+                        if second_to_last.find(words[2]) > 0 and second_to_last.find(words[2]) > first_position:
+                            del_part = second_to_last[0:first_position]
+                            del_part_width, del_part_height = text_maison_neue_book.getsize(del_part)
+                            left = del_part_width
+                        
+                        elif last.find(words[2]) > -1:
+                            first_position = second_to_last.find(words[0])
+                            del_part = second_to_last[0:first_position]
+                            del_part_width, del_part_height = text_maison_neue_book.getsize(del_part)
+                            
+                            first_word_width, second_word_height = text_maison_neue_book.getsize(words[0])
+                            if del_part_width + first_word_width < self.width:
+                                left = del_part_width
+                            else :
+                                left = 0
+                                top += spacing
+                                
+                    # look in the first last part           
+                    elif last.find(words[0]) > -1:
+                        first_position = last.find(words[0])
+                        if last.find(words[2]) > 0 and last.find(words[2]) > first_position:
+                            del_part = last[0:first_position]
+                            del_part_width, del_part_height = text_maison_neue_book.getsize(del_part)
+                            left = del_part_width
+                        
+                            
+                    # place in the sentence
+                    for word in words:
+                        if word == "forêt.":
+                            place_img = Image.open("assets/img/forêt.jpg")
+                            img_width, img_height = place_img.size
+                            comma_left = left + img_width
+                            
+                            if (left + img_width > self.width):
+                                effects.add_image("assets/img/forêt.jpg", True, top, img)
+                                context.text((comma_left, top), ', ', fill=self.text_color, font=text_maison_neue_book)
+                            else:
+                                effects.add_image("assets/img/forêt.jpg", True, top - spacing, img, left)
+                                context.text((comma_left, top - spacing), '.', fill=self.text_color, font=text_maison_neue_book)
+                        else :    
+                            context.text((left,top - spacing), word, fill=self.text_color, font=text_maison_neue_book)
+                            word_width, word_height = text_maison_neue_book.getsize(word)
+                            left += word_width + 5
+                            if (left + word_width) > self.width:
+                                left = 0
+                                top += spacing
                         
 		    
 		elif start_sentence == "Un jour" or start_sentence == 'Un matin':

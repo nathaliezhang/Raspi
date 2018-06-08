@@ -530,9 +530,9 @@ def random_height(width, expression, font, font_size, spacing, text_color, top, 
     return height
     
 
-def add_image(url, add, top = 0, img_bg = False):
+def add_image(url, add, top = 0, img_bg = False, left = 0):
     custom_img = Image.open(url)
-    if add == True : img_bg.paste(custom_img, (0, top))
+    if add == True : img_bg.paste(custom_img, (left, top))
     img_width, img_height = custom_img.size
         
     return img_height
