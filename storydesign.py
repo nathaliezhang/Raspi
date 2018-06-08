@@ -29,6 +29,7 @@ class StoryDesign():
             "Il était une fois", "Il y a bien longtemps", "Il fut un temps",
             "dans un coquillage", "au beau milieu d'un désert", "près d'une cascade", "sur la lune", "au coeur de la jungle", "à l'orée d'une forêt",
             "Soudain", "Tout à coup", "Brusquement", "Subitement",
+            #"C'est alors qu'un sorcier surgit de nulle part, tendit une cuillère avant de diparaitre à nouveau",
             "Puis", "Ensuite",
             "De temps en temps",
             "Heureusement", "Malheureusement", "Finalement",
@@ -97,14 +98,14 @@ class StoryDesign():
 	    
 	    # detect custom words
             for expression in ordered_custom_words:
-                #print ordered_custom_words 
                 
                 begin = story_part.find(expression)
 		end = begin + len(expression)
 		
 		# custom words 
 		start_sentence = story_part[begin:end + 1].strip() # space before @
- 
+                print start_sentence
+                
                 custom_width, custom_height = text_maison_neue_bold.getsize(start_sentence) # get text width
                 center_left = (self.width - custom_width) / 2; # center text
 
@@ -127,8 +128,8 @@ class StoryDesign():
                     
                 elif start_sentence == "au beau milieu d'un désert.":
                                     
-                    left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[0]
-                    top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[1]
+                    left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[0]
+                    top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[1]
                             
                     # place in the sentence
                     words = start_sentence.split(" ")
@@ -140,27 +141,33 @@ class StoryDesign():
                         if (left + word_width) > self.width:
                             left = 0
                             top += spacing
-                            
+                    top -= 2 * spacing
                             
                 elif start_sentence == "à l'orée d'une forêt.":
-                    left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[0]
-                    top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[1]
+                    left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[0]
+                    top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[1]
                     effects.place_img_position(self.width, start_sentence, spacing, self.font_size, self.text_color, top, left, context, img)
                 
                 elif start_sentence == "au coeur de la jungle.":
-                    left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[0]
-                    top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[1]
+                    left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[0]
+                    top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[1]
                     effects.place_img_position(self.width, start_sentence, spacing, self.font_size, self.text_color, top, left, context, img)
                 
                 elif start_sentence == "près d'une cascade.":
-                    left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[0]
-                    top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[1]
+                    left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[0]
+                    top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[1]
                     effects.place_img_position(self.width, start_sentence, spacing, self.font_size, self.text_color, top, left, context, img)
                 
                 elif start_sentence == "sur la lune.":
-                    left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[0]
-                    top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size)[1]
+                    left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[0]
+                    top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[1]
                     effects.place_img_position(self.width, start_sentence, spacing, self.font_size, self.text_color, top, left, context, img)
+                
+                elif start_sentence == "dans un coquillage.":
+                    left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[0]
+                    top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[1]
+                    effects.place_img_position(self.width, start_sentence, spacing, self.font_size, self.text_color, top, left, context, img)
+                    
 		    
 		elif start_sentence == "Un jour" or start_sentence == 'Un matin':
 		    effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rotate, self.font_size + 25, self.text_color, top, context)
@@ -175,6 +182,24 @@ class StoryDesign():
 		    center_left = (self.width - custom_width) / 2;
 		    effects.increase_font(start_sentence, editor_bold, font_size, self.text_color, top, center_left, context)
 		    top += 15
+		    
+##		elif start_sentence == "C'est alors qu'un sorcier surgit de nulle part, tendit une cuillère avant de diparaitre à nouveau":
+##                    
+##		    text_proto_grotesk_bold = ImageFont.truetype(proto_grotesk_bold, self.font_size + 5, encoding="unic")
+##		    words = start_sentence.split(" ")
+##		    top += 20
+##		    left = 0
+##		    
+##		    for word in words:
+##                        word = word.upper()
+##                        word_width, word_height = text_proto_grotesk_bold.getsize(word)
+##                        
+##                        context.text((left, top), word, fill=self.text_color, font=text_proto_grotesk_bold) # draw text
+##                        left += word_width + 10
+##                        if left > self.width:
+##                            left = 0
+##                            top += spacing + 5
+##                    top -= spacing
 		    
                 elif start_sentence == "Puis":
                     context.text((0, top), start_sentence, fill=self.text_color, font=text_maison_neue_book) # draw text
@@ -242,11 +267,6 @@ class StoryDesign():
 		# center first sentence end or not
 		first_story_lines = textwrap.wrap(first_sentence, width=28)
 		for first_story_line in first_story_lines:
-                    
-##                    for event in self.imposed_events:
-##                        if rest_sentences.find(event):
-##                            print event
-		    #print start_sentence
 
 		    if start_sentence == "Soudain" or start_sentence == 'Tout à coup' or start_sentence == 'Brusquement' or start_sentence == 'Subitement':
 			text_maison_neue_rotate = ImageFont.truetype(maison_neue_rotate, self.font_size + 5, encoding="unic")
@@ -254,7 +274,6 @@ class StoryDesign():
 			center_left = (self.width - line_width) / 2; # center text
 			context.multiline_text((center_left, top), first_story_line, fill=self.text_color, font=text_maison_neue_rotate) # draw text
 			#top -= 5
-			top += 50
 		    elif start_sentence == "Un jour":
 			left = effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rotate, self.font_size + 25, self.text_color, top, False)
 			top = effects.paragraph_after_effect(first_sentence, 20, left, top + 10, spacing, self.text_color, text_maison_neue_book, context, True)

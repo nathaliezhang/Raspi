@@ -5,7 +5,7 @@ from PIL import Image, ImageFont
 import textwrap
 import storydesign
 from random import randint
-
+import re
 
 # fonts
 editor_regular = 'assets/fonts/Editor/Editor-Regular.ttf'
@@ -530,7 +530,7 @@ def random_height(width, expression, font, font_size, spacing, text_color, top, 
     return height
 
 
-def get_left_place(width, expression, story_part, top, font_size):
+def get_left_place(width, expression, story_part, top, font_size, spacing):
     
     text_maison_neue_book = ImageFont.truetype(maison_neue_book, font_size, encoding="unic")
     words = expression.split(" ")
@@ -545,36 +545,56 @@ def get_left_place(width, expression, story_part, top, font_size):
     last = rest_lines[array_length - 1]
     left = 0
     result = []
-                    
+    
+    print last
+    if words[0] == "à": # particular case for 'à l'orée d'une forêt'
+        first_word_second_last = re.search(r""+words[0]+r"\s", second_to_last)
+    else :
+        first_word_second_last = re.search(r"\b"+words[0]+r"\b", second_to_last)
+    second_word_second_last = re.search(r"\b"+words[1]+r"\b", second_to_last)
+    
+    if words[0] == "à": # particular case for 'à l'orée d'une forêt'
+        first_word_last = re.search(r""+words[0]+r"\s", last)
+    else :
+        first_word_last = re.search(r"\b"+words[0]+r"\b", last)
+    second_word_last = re.search(r"\b"+words[1]+r"\b", last)
+
+    
     # start to look in the second last part
-    if second_to_last.find(words[0]) > -1:
-        first_position = second_to_last.find(words[0])
-                        
-        #find in the same part
-        if second_to_last.find(words[2]) > 0 and second_to_last.find(words[2]) > first_position:
+    if first_word_second_last:
+        first_position = first_word_second_last.start() # get position with space before : +1 delete space
+        print first_position
+        print second_word_second_last.start()
+        #find second word in the same part
+        if second_word_second_last and second_word_second_last.start() > first_position:
             del_part = second_to_last[0:first_position]
             del_part_width, del_part_height = text_maison_neue_book.getsize(del_part)
-            left = del_part_width
-                        
-        elif last.find(words[2]) > -1:
-            first_position = second_to_last.find(words[0])
-            del_part = second_to_last[0:first_position]
+            left = del_part_width + 4
+        
+        #find second word in the last part
+        elif second_word_last:
+            first_position = first_word_second_last.start()
+            del_part = second_to_last[0:first_position] # from left paper to the cut word before expression
             del_part_width, del_part_height = text_maison_neue_book.getsize(del_part)
                         
             first_word_width, second_word_height = text_maison_neue_book.getsize(words[0])
             if del_part_width + first_word_width < width:
-                left = del_part_width
+                left = del_part_width + 4
             else :
                 left = 0
                 top += spacing
                 
-    # look in the first last part           
-    elif last.find(words[0]) > -1:
-        first_position = last.find(words[0])
-        if last.find(words[2]) > 0 and last.find(words[2]) > first_position:
+    # look in the first last part
+    elif first_word_last:
+        first_position = first_word_last.start()
+        if first_position == 0 :
+            top += spacing
+            left -= 4
+        if second_word_last and second_word_last.start() > first_position:
             del_part = last[0:first_position]
             del_part_width, del_part_height = text_maison_neue_book.getsize(del_part)
-            left = del_part_width
+            left = del_part_width + 4
+        
                 
     result.extend([left, top])
     return result
@@ -590,29 +610,31 @@ def place_img_position(width, expression, spacing, font_size, text_color, top, l
         img_asset = "assets/img/cascade.jpg"
     elif expression == "sur la lune.":
         img_asset = "assets/img/lune.jpg"
+    elif expression == "dans un coquillage.":
+        img_asset = "assets/img/coquillage.jpg"
     
     # place in the sentence
     text_maison_neue_book = ImageFont.truetype(maison_neue_book, font_size, encoding="unic")
     words = expression.split(" ")
     for index, word in enumerate(words):
-        if index == len(words) - 1:
+        if index == len(words) - 1: # if the last word correspond
             place_img = Image.open(img_asset)
             img_width, img_height = place_img.size
                             
-            if (left + img_width > width):
+            if (left + img_width > width): #if back to line
                 comma_left = img_width
                 if word != "cascade.":
                     add_image(img_asset, True, top, img)
                     context.text((comma_left, top), '.', fill=text_color, font=text_maison_neue_book)
                 else:
-                   add_image(img_asset, True, top + 5, img, 5) 
+                   add_image(img_asset, True, top + 5, img) 
             else:
                 comma_left = left + img_width
                 if word != "cascade.":
                     add_image(img_asset, True, top - spacing, img, left)
                     context.text((comma_left, top - spacing), '.', fill=text_color, font=text_maison_neue_book)
                 else:
-                    add_image(img_asset, True, top - spacing + 5, img, left + 5)
+                    add_image(img_asset, True, top - spacing + 6, img, left)
         else :    
             context.text((left,top - spacing), word, fill=text_color, font=text_maison_neue_book)
             word_width, word_height = text_maison_neue_book.getsize(word)
