@@ -528,6 +528,56 @@ def random_height(width, expression, font, font_size, spacing, text_color, top, 
         
         height = spacing
     return height
+
+
+def get_left_place(width, expression, story_part, top, font_size):
+    
+    text_maison_neue_book = ImageFont.truetype(maison_neue_book, font_size, encoding="unic")
+    words = expression.split(" ")
+    
+    # cut sentence and delete first sentence
+    rest_paragraph = story_part.split(". ", 1)
+                    
+    # get last part width
+    rest_lines = textwrap.wrap(rest_paragraph[1], width=28)
+    array_length = len(rest_lines)
+    second_to_last = rest_lines[array_length - 2]
+    last = rest_lines[array_length - 1]
+    left = 0
+    result = []
+                    
+    # start to look in the second last part
+    if second_to_last.find(words[0]) > -1:
+        first_position = second_to_last.find(words[0])
+                        
+        #find in the same part
+        if second_to_last.find(words[2]) > 0 and second_to_last.find(words[2]) > first_position:
+            del_part = second_to_last[0:first_position]
+            del_part_width, del_part_height = text_maison_neue_book.getsize(del_part)
+            left = del_part_width
+                        
+        elif last.find(words[2]) > -1:
+            first_position = second_to_last.find(words[0])
+            del_part = second_to_last[0:first_position]
+            del_part_width, del_part_height = text_maison_neue_book.getsize(del_part)
+                        
+            first_word_width, second_word_height = text_maison_neue_book.getsize(words[0])
+            if del_part_width + first_word_width < width:
+                left = del_part_width
+            else :
+                left = 0
+                top += spacing
+                
+    # look in the first last part           
+    elif last.find(words[0]) > -1:
+        first_position = last.find(words[0])
+        if last.find(words[2]) > 0 and last.find(words[2]) > first_position:
+            del_part = last[0:first_position]
+            del_part_width, del_part_height = text_maison_neue_book.getsize(del_part)
+            left = del_part_width
+                
+    result.extend([left, top])
+    return result
     
 
 def add_image(url, add, top = 0, img_bg = False, left = 0):
