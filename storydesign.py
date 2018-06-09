@@ -112,14 +112,16 @@ class StoryDesign():
                 begin = story_part.find(expression)
 		end = begin + len(expression)
 		
-		# custom words 
+		# custom words
+		
 		start_sentence = story_part[begin:end + 1].strip() # space before @
+                print story_part[begin:end + 1]
                 
                 custom_width, custom_height = text_maison_neue_bold.getsize(start_sentence) # get text width
                 center_left = (self.width - custom_width) / 2; # center text
 
 		# check if have a custom word in this paragraph
-		if start_sentence.find(",") >= 0:
+                if start_sentence.find(",") >= 0:
 		    start_sentence = start_sentence[0:len(start_sentence) - 1] # suctract "," to detect the word
 		    
 		    

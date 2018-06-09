@@ -13,6 +13,7 @@ editor_medium = 'assets/fonts/Editor/Editor-Medium.ttf'
 editor_bold = 'assets/fonts/Editor/Editor-Bold.ttf'
 maison_neue_book = 'assets/fonts/Maison-Neue/Maison Neue Book.otf'
 maison_neue_bold = 'assets/fonts/Maison-Neue/Maison Neue Bold.otf'
+maison_neue_contour = 'assets/fonts/Maison-Neue/MaisonContour.otf'
 proto_grotesk_regular = 'assets/fonts/ProtoGrotesk/ProtoGrotesk-Regular.otf'
 proto_grotesk_bold = 'assets/fonts/ProtoGrotesk/ProtoGrotesk-Bold.otf'
 
@@ -72,6 +73,26 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
             elif start_sentence == "Depuis ce jour":
                 height = since(width, start_sentence, maison_neue_bold, 28, spacing, "#000", top)
                 font_effects_height += height
+                
+            elif start_sentence == "C'est alors qu'un sorcier surgit de nulle part, tendit une cuillère avant de disparaitre à nouveau" or start_sentence == "C'est alors qu'un sorcier surgit de nulle part, il jeta un sort et éclata de rire":
+                height = imposed_event(width, start_sentence, "sorcier", top, maison_neue_bold, maison_neue_contour, 28, after_part, spacing, "#000")
+		font_effects_height += height
+		
+	    elif start_sentence == "C'est alors que des météorites tombèrent du ciel. Elle créèrent d'énormes cratères en s'écrasant sur le sol !" or start_sentence == "C'est alors que des météorites tombèrent du ciel. Elles roulèrent et enflammèrent tout ce qui se trouvait aux alentours.":
+                height = imposed_event(width, start_sentence, "météorites", top, maison_neue_bold, maison_neue_contour, 28, after_part, spacing,"#000")
+		font_effects_heighttop += height
+		    
+	    elif start_sentence == "C'est alors qu'une tornade effroyable éclata. Le vent était si fort qu'il emportait tout sur son passage" or start_sentence == "C'est alors qu'une tornade effroyable éclata. Par chance, elle ne dura pas très longtemps":
+                height = imposed_event(width, start_sentence, "tornade", top, maison_neue_bold, maison_neue_contour, 28, after_part, spacing, "#000")
+		font_effects_height += height
+		    
+            elif start_sentence == "C'est alors qu'une guerrière apparut et proposa d'accompagner les personnages dans leur aventure." or start_sentence == "C'est alors qu'une guerrière apparut et lança un défi : réussir à la battre à l'épée.":
+                height = imposed_event(width, start_sentence, "guerrière", top, maison_neue_bold, maison_neue_contour, 28, after_part, spacing, "#000")
+		font_effects_height += height
+		    
+	    elif start_sentence == "C'est alors qu'une plante se mit à pousser tellement haut qu'on en voyait plus la fin ! Le tronc était assez large pour grimper dessus." or start_sentence == "C'est alors qu'une plante se mit à pousser tellement haut qu'on en voyait plus la fin ! La plante gênait le passage.":
+                height = imposed_event(width, start_sentence, "plante", top, maison_neue_bold, maison_neue_contour, 28, after_part, spacing, "#000")
+		font_effects_height += height
                     
 ##                # get the images height for drawImage
 ##                if start_sentence == "Puis":
@@ -117,7 +138,7 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
     img_cut_height = add_image("assets/img/cut.jpg", False)
     images_height += img_cut_height
 
-    height = top + before + title_margin_bottom + nb_lines * spacing + nb_parts * after_part + images_height + font_effects_height + bottom - nb_subparts * (spacing - 5) - after_part
+    height = top + before + title_margin_bottom + nb_lines * spacing + nb_parts * after_part + images_height + font_effects_height + bottom * 3
     return height
             
 
@@ -546,8 +567,13 @@ def get_left_place(width, expression, story_part, top, font_size, spacing):
     left = 0
     result = []
     
+    
     if words[0] == "à": # particular case for 'à l'orée d'une forêt'
         first_word_second_last = re.search(r""+words[0]+r"\s", second_to_last)
+        
+        if first_word_second_last == None and re.search(r""+words[0]+r"\s", last) == None: # if word not in last part and not found in first
+            left = 0
+            top += spacing
     else :
         first_word_second_last = re.search(r"\b"+words[0]+r"\b", second_to_last)
     second_word_second_last = re.search(r"\b"+words[1]+r"\b", second_to_last)
@@ -642,7 +668,7 @@ def place_img_position(width, expression, spacing, font_size, text_color, top, l
                 top += spacing
 
     
-def imposed_event(width, expression, contour_word, top, font_bold, font_contour, font_size, after_part, spacing, text_color, context):
+def imposed_event(width, expression, contour_word, top, font_bold, font_contour, font_size, after_part, spacing, text_color, context = False):
     
     text_event_bold = ImageFont.truetype(font_bold, font_size + 12, encoding="unic")
     text_event_contour = ImageFont.truetype(font_contour, font_size + 5, encoding="unic")
@@ -664,22 +690,22 @@ def imposed_event(width, expression, contour_word, top, font_bold, font_contour,
         if left + word_width < width:
         
             if word == contour_word.upper():
-                context.text((left, top + 4), word, fill=text_color, font=text_event_contour) # draw text
+                if context : context.text((left, top + 4), word, fill=text_color, font=text_event_contour) # draw text
             else:
-                context.text((left, top), word, fill=text_color, font=text_event_bold) # draw text
+                if context : context.text((left, top), word, fill=text_color, font=text_event_bold) # draw text
             left += word_width + 10
         else:
             top += spacing + 10
             effect_height += spacing + 10
             left = 0
             if word == contour_word.upper():
-                context.text((left, top + 4), word, fill=text_color, font=text_event_contour) # draw text
+                if context : context.text((left, top + 4), word, fill=text_color, font=text_event_contour) # draw text
             else:
-                context.text((left, top), word, fill=text_color, font=text_event_bold) # draw text
+                if context : context.text((left, top), word, fill=text_color, font=text_event_bold) # draw text
             left += word_width + 10
  
     if contour_word == "sorcier" or contour_word == "tornade":
-        context.text((left - 10, top), '.', fill=text_color, font=text_event_bold) # draw text
+        if context : context.text((left - 10, top), '.', fill=text_color, font=text_event_bold) # draw text
     
     return effect_height
 

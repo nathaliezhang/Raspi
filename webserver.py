@@ -65,18 +65,20 @@ class Server(BaseHTTPRequestHandler):
 		
 def run(server_class=HTTPServer, handler_class=Server):
     
-        #local story design
-        paper = storydesign.StoryDesign()
-        filename = paper.filename
-        fileformat = paper.fileformat
-        #title = "Un chat blanc tacheté d'orange sous l'océan"
-        #story = "Il y a bien longtemps, un chat. Il était blanc tacheté d’orange. Il n’avait qu’un seul œil et adorait jouer avec les poissons. Un jour, il plongea au coeur de la jungle. Malheureusement, il se rendit compte qu'il ne savait pas nager. Heureusement, il était assez fou pour quand même se jeter à l'eau.@Tout à coup, un poisson rouge vint à sa rencontre. Le chat intrigué, s’approcha de ce dernier. Il lui tendit la patte. Le poisson ne comprenant pas son geste eu peur et s’enfuit à toute vitesse.@Puis, il alla se cacher derrière un rocher. De temps en temps, il jetait des coups d'oeil dans la direction du chat. Surpris, ce dernier parti de nouveau à sa rencontre. C'est alors qu'un sorcier surgit de nulle part, il jeta un sort et éclata de rire. Il transforma le chat en poisson. Ne voyant pas le chat, le poisson sorti de sa cachette.@Ensuite, il vit un poisson chat sans se douter une seconde de sa véritable identité. Le poisson chat tout heureux s’approcha de lui.@Depuis ce jour, ils furent inséparables. C'est ainsi que débuta leur amitié. Désormais, ils étaient attachés l'un à l'autre."    
-        
-        title = "Une coccinelle qui voulait grandir au beau milieu d'un désert"
-        story = "Il était une fois, une coccinelle qui voulait grandir. Elle ressemblait à un singe. La coccinelle avait pour habitude de nager dans les oasis aux alentours. Ses activités préférés étaient de plonger. Mais pour une fois, elle dansait toute la nuit au beau milieu d'un désert.@Soudain, un train apparut et s'éleva si haut dans les airs qu'on ne le voyait plus. Elle commença à plonger dans un chaudron. Après cette aventure, elle prit un bain. C'est alors qu'une plante se mit à pousser tellement haut qu'on en voyait plus la fin ! Le tronc était assez large pour grimper dessus.@Finalement, elle se servit de la cuillère pour se laver. @Depuis ce jour, elle est rayonnante et s’enflamma."
-        paper.text_in_img(unicode(title, 'UTF8'), unicode(story, 'UTF8'))
-        # os.system('lpr ' + filename + fileformat + '')
-        #print story
+##        #local story design
+##        paper = storydesign.StoryDesign()
+##        filename = paper.filename
+##        fileformat = paper.fileformat
+##        #title = "Un chat blanc tacheté d'orange sous l'océan"
+##        #story = "Il y a bien longtemps, un chat. Il était blanc tacheté d’orange. Il n’avait qu’un seul œil et adorait jouer avec les poissons. Un jour, il plongea au coeur de la jungle. Malheureusement, il se rendit compte qu'il ne savait pas nager. Heureusement, il était assez fou pour quand même se jeter à l'eau.@Tout à coup, un poisson rouge vint à sa rencontre. Le chat intrigué, s’approcha de ce dernier. Il lui tendit la patte. Le poisson ne comprenant pas son geste eu peur et s’enfuit à toute vitesse.@Puis, il alla se cacher derrière un rocher. De temps en temps, il jetait des coups d'oeil dans la direction du chat. Surpris, ce dernier parti de nouveau à sa rencontre. C'est alors qu'un sorcier surgit de nulle part, il jeta un sort et éclata de rire. Il transforma le chat en poisson. Ne voyant pas le chat, le poisson sorti de sa cachette.@Ensuite, il vit un poisson chat sans se douter une seconde de sa véritable identité. Le poisson chat tout heureux s’approcha de lui.@Depuis ce jour, ils furent inséparables. C'est ainsi que débuta leur amitié. Désormais, ils étaient attachés l'un à l'autre."    
+##        
+##        title = "Une coccinelle qui voulait grandir au beau milieu d'un désert"
+##        #story = "Il était une fois, une coccinelle qui voulait grandir. Elle ressemblait à un singe. La coccinelle avait pour habitude de nager dans les oasis aux alentours. Ses activités préférés étaient de plonger. Mais pour une fois, elle dansait toute la nuit au beau milieu d'un désert.@Soudain, un train apparut et s'éleva si haut dans les airs qu'on ne le voyait plus. Un pigeon voyageur sortit de nulle part, tendit un message, avant de repartir : Bonjour, voici un message pour le héros de l'histoire.Elle commença à plonger dans un chaudron. Après cette aventure, elle prit un bain. C'est alors qu'une plante se mit à pousser tellement haut qu'on en voyait plus la fin ! Le tronc était assez large pour grimper dessus.@Finalement, elle se servit de la cuillère pour se laver. @Depuis ce jour, elle est rayonnante et s’enflamma."
+##        story = "Il était une fois, zézayassent. Cédez. Vzefezfrezr avait pour habitude serez. Mais cette fois-ci, errerez au beau milieu d'un désert. Zeuzères réserve. Ezrzer. Ezrzer. Teztrezrz. @Soudain, of,off. Un pigeon voyageur sortit de nulle part, tendit un message, avant de repartir : Foreign,r. |Oignons,,f. Ffkfkg. Après cet évènement, gloria,g. Regre. C'est alors que des météorites tombèrent du ciel. Elle créèrent d'énormes cratères en s'écrasant sur le sol ! Frère. Ensuite, gtgt. @Heureusement, tyujty. Tytyu. @Depuis ce jour, htyhyt. Jytjty."
+##        #story = "Il fut un temps, test. D’une. Histoire avait pour habitude courte. Mais cette fois-ci, test au beau milieu d'un désert. @Tout à coup, test. Test. Après cet évènement, test. C'est alors qu'une plante se mit à pousser tellement haut qu'on en voyait plus la fin ! Le tronc était assez large pour grimper dessus. @Malheureusement, tre. @Depuis ce jour, test."
+##        paper.text_in_img(unicode(title, 'UTF8'), unicode(story, 'UTF8'))
+##        # os.system('lpr ' + filename + fileformat + '')
+##        #print story
         
 	host = commands.getoutput('hostname -I') #raspberry IP : depending the network
 	port = 8080
