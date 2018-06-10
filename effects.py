@@ -201,7 +201,6 @@ def two_fonts_title(width, title, regular_font, bold_font, spacing, text_color, 
 def center_title(width, line_words, text_proto_regular, text_proto_bold, top, text_color, context):
     
     line_left = 0
-    print line_words
     for index, word in enumerate(line_words):
         if index % 2 == 0:
             word_width, word_height = text_proto_regular.getsize(word)
