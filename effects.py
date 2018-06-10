@@ -126,8 +126,8 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
         nb_parts += 1
         
     # add title
-##    height = two_fonts_title(width, title, proto_grotesk_regular, proto_grotesk_bold, spacing, "#000", top)
-##    font_effects_height += height
+    height = two_fonts_title(width, title, proto_grotesk_regular, proto_grotesk_bold, spacing, "#000", top)
+    font_effects_height += height
     
     # add end
     end_random = storydesign.StoryDesign.end_random
@@ -149,12 +149,12 @@ def two_fonts_title(width, title, regular_font, bold_font, spacing, text_color, 
     height_spacing = 15
     title_parts = title.split(" ")
     effect_top = top
-    left = 0
+    left = 10
     line_words = []
     last_word = ""
     
     text_proto_regular = ImageFont.truetype(regular_font, 20, encoding="unic")
-    text_proto_bold = ImageFont.truetype(bold_font, 45, encoding="unic")
+    text_proto_bold = ImageFont.truetype(bold_font, 48, encoding="unic")
     
     i = 0
     while i < len(title_parts):
@@ -167,76 +167,60 @@ def two_fonts_title(width, title, regular_font, bold_font, spacing, text_color, 
             word_width, word_height = text_proto_bold.getsize(title_parts[i])
     
         if left + word_width < width:
-            line_words.append(title_parts[i])
+            line_words.append(title_parts[i]) # stock words in a line
             left += word_width + 10
 
         else:
-            
-            line_left = 0
-            print line_words
-            for index, word in enumerate(line_words):
-                if index % 2 == 0:
-                    word_width, word_height = text_proto_regular.getsize(word)
-                    line_left += word_width + 15 
-                else :
-                    word_width, word_height = text_proto_bold.getsize(word)
-                    line_left += word_width + 15 
-            
-            center_left = (width - line_left) / 2
-            for index, word in enumerate(line_words):
-                if index % 2 == 0:
-                    word_width, word_height = text_proto_regular.getsize(word)
-                    if context : context.text((center_left, top), word, fill=text_color, font=text_proto_regular) # draw text
-                    center_left += word_width + 15 
-                else :
-                    word_width, word_height = text_proto_bold.getsize(word)
-                    if context : context.text((center_left, top), word, fill=text_color, font=text_proto_bold) # draw text
-                    center_left += word_width + 15
+            center_title(width, line_words, text_proto_regular, text_proto_bold, top, text_color, context)
             
             line_words = []
-            line_words.append(title_parts[i])
+            line_words.append(title_parts[i]) # add cut word in the next line
             
-            left = 0
+            left = 10
+            # add cut word width
             if i % 2 == 0:
                 word_width, word_height = text_proto_regular.getsize(title_parts[i])
-                left += word_width + 15 
+                left += word_width + 10 
             else :
                 word_width, word_height = text_proto_bold.getsize(title_parts[i])
-                left += word_width + 15 
-            #left = 0
+                left += word_width + 10 
             
-            top += spacing + 15
+            top += spacing + 20
             effect_height += spacing + 10
         
+        # last line : draw
         if i == len(title_parts) -1 :
-            
-            line_left = 0
-            print line_words
-            for index, word in enumerate(line_words):
-                if index % 2 == 0:
-                    word_width, word_height = text_proto_regular.getsize(word)
-                    line_left += word_width + 15 
-                else :
-                    word_width, word_height = text_proto_bold.getsize(word)
-                    line_left += word_width + 15 
-            
-            center_left = (width - line_left) / 2
-            for index, word in enumerate(line_words):
-                if index % 2 == 0:
-                    word_width, word_height = text_proto_regular.getsize(word)
-                    if context : context.text((center_left, top), word, fill=text_color, font=text_proto_regular) # draw text
-                    center_left += word_width + 15 
-                else :
-                    word_width, word_height = text_proto_bold.getsize(word)
-                    if context : context.text((center_left, top), word, fill=text_color, font=text_proto_bold) # draw text
-                    center_left += word_width + 15
-            
+            center_title(width, line_words, text_proto_regular, text_proto_bold, top, text_color, context)
+              
         i += 1
     
     effect_height += 60
-    
     return effect_height
 
+
+def center_title(width, line_words, text_proto_regular, text_proto_bold, top, text_color, context):
+    
+    line_left = 0
+    print line_words
+    for index, word in enumerate(line_words):
+        if index % 2 == 0:
+            word_width, word_height = text_proto_regular.getsize(word)
+            line_left += word_width + 15 
+        else :
+            word_width, word_height = text_proto_bold.getsize(word)
+            line_left += word_width + 15 
+            
+    center_left = (width - line_left) / 2
+    for index, word in enumerate(line_words):
+        if index % 2 == 0:
+            word_width, word_height = text_proto_regular.getsize(word)
+            if context : context.text((center_left, top), word, fill=text_color, font=text_proto_regular) # draw text
+            center_left += word_width + 15 
+        else :
+            word_width, word_height = text_proto_bold.getsize(word)
+            if context : context.text((center_left, top), word, fill=text_color, font=text_proto_bold) # draw text
+            center_left += word_width + 15
+    
 
 def increase_font(custom_word, font, font_size, text_color, top, left = 0, context = False):
         
