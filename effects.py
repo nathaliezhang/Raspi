@@ -380,7 +380,7 @@ def paragraph_after_effect(first_sentence, first_line_width, left, top, spacing,
     
     effect_top = top
     sentences = textwrap.wrap(first_sentence, width=first_line_width)
-                      
+       
     if add_comma : first_part = ', ' + sentences[0]
     else : first_part = sentences[0]
     context.text((left, effect_top - spacing), first_part, fill=text_color, font=text_font)

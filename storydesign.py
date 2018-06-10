@@ -158,16 +158,19 @@ class StoryDesign():
                     left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[0]
                     top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[1]
                     effects.place_img_position(self.width, start_sentence, spacing, self.font_size, self.text_color, top, left, context, img)
+                    top += 30
                 
                 elif start_sentence == "au coeur de la jungle.":
                     left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[0]
                     top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[1]
                     effects.place_img_position(self.width, start_sentence, spacing, self.font_size, self.text_color, top, left, context, img)
+                    top += 30
                 
                 elif start_sentence == "près d'une cascade.":
                     left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[0]
                     top = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[1]
                     effects.place_img_position(self.width, start_sentence, spacing, self.font_size, self.text_color, top, left, context, img)
+                    top += 80
                 
                 elif start_sentence == "sur la lune.":
                     left = effects.get_left_place(self.width, start_sentence, story_part, top, self.font_size, spacing)[0]
@@ -254,6 +257,12 @@ class StoryDesign():
                     height = effects.random_height(self.width, start_sentence, maison_neue_bold, self.font_size, spacing, self.text_color, top, context)
                     top += height
                     
+                elif start_sentence == "Et c'est ainsi":
+                    context.text((0, top), start_sentence, fill=self.text_color, font=text_maison_neue_bold)
+                
+                elif start_sentence == "Il fut un temps":
+                    context.text((0, top), start_sentence + ', ', fill=self.text_color, font=text_maison_neue_bold)
+                    
 ##                    elif start_sentence == "Puis":
 ##                        # create fonction to load img
 ##                        img_height = effects.add_image("assets/img/mountains.jpg", True, top, img)
@@ -287,6 +296,22 @@ class StoryDesign():
 			center_left = (self.width - line_width) / 2; # center text
 			context.multiline_text((center_left, top), first_story_line, fill=self.text_color, font=text_maison_neue_rotate) # draw text
 			#top -= 5
+                    elif start_sentence == "Il était une fois" or start_sentence == "Il y a bien longtemps" :
+                        first_story_lines = textwrap.wrap(first_sentence, width=28)
+                        for index, first_story_line in enumerate(first_story_lines):
+                            line_width, line_height = text_maison_neue_book.getsize(first_story_line) # get text width
+                            context.multiline_text((0,top), first_story_line, fill=self.text_color, font=text_maison_neue_book) # draw text
+                            if index == len(first_story_lines) - 1:
+                                top += 2 * spacing / 5
+                            else:
+                                top += spacing
+                        break
+                    
+                    elif start_sentence == "Il fut un temps":
+                        word_width, word_height = text_maison_neue_bold.getsize(start_sentence + " ") # get text width
+			top = effects.paragraph_after_effect(first_sentence, 15, word_width + 10, top, spacing, self.text_color, text_maison_neue_book, context)
+			top -= 3 * spacing / 5
+			break
 		    elif start_sentence == "Un jour":
 			left = effects.word_in_sentence(self.width, start_sentence, maison_neue_book, self.font_size, maison_neue_rotate, self.font_size + 25, self.text_color, top, False)
 			top = effects.paragraph_after_effect(first_sentence, 20, left, top + 10, spacing, self.text_color, text_maison_neue_book, context, True)
@@ -318,6 +343,13 @@ class StoryDesign():
                         word_width, word_height = text_maison_neue_bold.getsize(start_sentence.upper()) # get text width
 			top = effects.paragraph_after_effect(first_sentence, 15, word_width + 20, top - 2 * spacing / 3, spacing, self.text_color, text_maison_neue_book, context) - 2 * spacing / 3
                         break
+                    elif start_sentence == "Et c'est ainsi":
+                        word_width, word_height = text_maison_neue_bold.getsize(start_sentence + " ") # get text width
+                        top = effects.paragraph_after_effect(first_sentence, 15, word_width + 5, top, spacing, self.text_color, text_maison_neue_book, context)
+                        print rest_sentences
+                        break
+                    
+                        context.text((0, top), start_sentence, fill=self.text_color, font=text_maison_neue_bold)
 		    else:    
 			line_width, line_height = text_maison_neue_book.getsize(first_story_line) # get text width
 			center_left = (self.width - line_width) / 2; # center text
@@ -328,13 +360,13 @@ class StoryDesign():
                     top += after_part
                 else:
                     top += spacing - 10
-		
-		rest_story_lines = textwrap.wrap(rest_sentences, width=28)
-		for rest_story_line in rest_story_lines:
-		    line_width, line_height = text_maison_neue_book.getsize(rest_story_line) # get text width
-		    context.multiline_text((0,top), rest_story_line, fill=self.text_color, font=text_maison_neue_book) # draw text
-		    top += spacing
-	    
+             
+	
+                rest_story_lines = textwrap.wrap(rest_sentences, width=28)
+                for rest_story_line in rest_story_lines:
+                    line_width, line_height = text_maison_neue_book.getsize(rest_story_line) # get text width
+                    context.multiline_text((0,top), rest_story_line, fill=self.text_color, font=text_maison_neue_book) # draw text
+                    top += spacing
 		    
             top_end = self.get_value(top) # get top value   
             top += after_part
