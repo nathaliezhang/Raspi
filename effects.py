@@ -126,8 +126,8 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
         nb_parts += 1
         
     # add title
-    height = two_fonts_title(width, title, proto_grotesk_regular, proto_grotesk_bold, spacing, "#000", top)
-    font_effects_height += height
+##    height = two_fonts_title(width, title, proto_grotesk_regular, proto_grotesk_bold, spacing, "#000", top)
+##    font_effects_height += height
     
     # add end
     end_random = storydesign.StoryDesign.end_random
@@ -148,36 +148,46 @@ def two_fonts_title(width, title, regular_font, bold_font, spacing, text_color, 
     effect_height = 0 
     height_spacing = 15
     title_parts = title.split(" ")
-        
+    effect_top = top
+    left = 0
+    line_words = []
+    last_word = ""
+    
     text_proto_regular = ImageFont.truetype(regular_font, 20, encoding="unic")
-    text_proto_bold = ImageFont.truetype(bold_font, 40, encoding="unic")  
-        
+    text_proto_bold = ImageFont.truetype(bold_font, 45, encoding="unic")
+    
     i = 0
     while i < len(title_parts):
         
-        # get size
         title_parts[i] = title_parts[i].upper()
-        small_custom_width, custom_height = text_proto_regular.getsize(title_parts[i]) # get text width
-        
-        if i + 1 < len(title_parts):
-            title_parts[i + 1] = title_parts[i + 1].upper()
-            large_custom_width, custom_height = text_proto_bold.getsize(title_parts[i+1]) # get text width
-            total_left = small_custom_width + 15 + large_custom_width
+        if i % 2 == 0:
+            word_width, word_height = text_proto_regular.getsize(title_parts[i])
         else:
-            total_left = small_custom_width
+            word_width, word_height = text_proto_bold.getsize(title_parts[i])
+        
+        
+        if left + word_width < width:
+            if i % 2 == 0:
+                if context : context.text((left, top), title_parts[i], fill=text_color, font=text_proto_regular) # draw text
+            else :
+                if context : context.text((left, top), title_parts[i], fill=text_color, font=text_proto_bold) # draw text
+            left += word_width + 10
 
-        center_left = (width - total_left) / 2
-        
+        else:
+            top += spacing + 15
+            effect_height += spacing + 10
             
-        # draw
-        if context : context.text((center_left,top), title_parts[i], fill=text_color, font=text_proto_regular)
-        if i + 1 < len(title_parts):
-            if context : context.text((center_left + small_custom_width + 15,top), title_parts[i+1], fill=text_color, font=text_proto_bold)
-                
-        top += spacing  + height_spacing
-        effect_height += spacing  + height_spacing
-        i += 2
+            left = 0
+            if i % 2 == 0:
+                if context : context.text((left, top), title_parts[i], fill=text_color, font=text_proto_regular) # draw text
+            else :
+                if context : context.text((left, top), title_parts[i], fill=text_color, font=text_proto_bold) # draw text
+            left += word_width + 10
         
+        i += 1
+    
+    effect_height += 60
+    
     return effect_height
 
 
@@ -593,7 +603,7 @@ def get_left_place(width, expression, story_part, top, font_size, spacing):
         if second_word_second_last and second_word_second_last.start() > first_position:
             del_part = second_to_last[0:first_position]
             del_part_width, del_part_height = text_maison_neue_book.getsize(del_part)
-            left = del_part_width + 4
+            left = del_part_width + 2
         
         #find second word in the last part
         elif second_word_last:
@@ -603,7 +613,7 @@ def get_left_place(width, expression, story_part, top, font_size, spacing):
                         
             first_word_width, second_word_height = text_maison_neue_book.getsize(words[0])
             if del_part_width + first_word_width < width:
-                left = del_part_width + 4
+                left = del_part_width + 2
             else :
                 left = 0
                 top += spacing
@@ -617,7 +627,7 @@ def get_left_place(width, expression, story_part, top, font_size, spacing):
         if second_word_last and second_word_last.start() > first_position:
             del_part = last[0:first_position]
             del_part_width, del_part_height = text_maison_neue_book.getsize(del_part)
-            left = del_part_width + 4
+            left = del_part_width + 2
         
                 
     result.extend([left, top])

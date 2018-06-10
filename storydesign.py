@@ -21,7 +21,7 @@ class StoryDesign():
          self.fileformat = ".png"
          self.width = 384
          self.bg_color = "#FFF"
-         self.font_size = 28
+         self.font_size = 26
          self.text_color = "#000"
          self.intro_customs = [
              "Il était une fois", "Il y a bien longtemps", "Il fut un temps"]
@@ -115,7 +115,6 @@ class StoryDesign():
 		# custom words
 		
 		start_sentence = story_part[begin:end + 1].strip() # space before @
-                print story_part[begin:end + 1]
                 
                 custom_width, custom_height = text_maison_neue_bold.getsize(start_sentence) # get text width
                 center_left = (self.width - custom_width) / 2; # center text
@@ -342,6 +341,14 @@ class StoryDesign():
         # add end
         img_end_height = effects.add_image("assets/img/fin0"+ str(self.end_random) +".jpg", True, top_end, img)
         top_end += img_end_height
+        
+        # written by
+        top_end += 20
+        sentence = "Une histoire de :"
+        sentence_width, sentence_height = text_maison_neue_book.getsize(sentence) # get text width
+        sentence_left = (self.width - sentence_width) / 2
+        context.multiline_text((sentence_left,top_end), sentence, fill=self.text_color, font=text_maison_neue_book)
+        top_end += 80
 
         # cut
         img_cut_height = effects.add_image("assets/img/cut.jpg", True, top_end, img)
