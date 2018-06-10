@@ -70,7 +70,7 @@ def run(server_class=HTTPServer, handler_class=Server):
         filename = paper.filename
         fileformat = paper.fileformat
         
-        title = "Un bonhomme nommé Sam le petit chasseur au coeur de la jungle"
+        title = "Un bonhomme nommé Sam le chasseur au coeur de la jungle"
         story = "Il était une fois, un bonhomme nommé Sam. Il portait toujours un chapeau sur la tête. Sam avait pour habitude de parcourir la savane tous les étés. Mais cette fois-ci, il décida de partir au coeur de la jungle. @Soudain, il rencontra un serpent lors d’un détour. Il n’avait pas peur de lui. En effet, il était habitué à rencontrer des animaux lors de ses voyages. Après cet évènement, Il décida d’aller rendre visite aux crocodiles. C'est alors qu'un sorcier surgit de nulle part, il jeta un sort et éclata de rire. @Malheureusement, il le transforma lui-même en un crocodile. @Et c'est ainsi qu’il resta animal toute sa vie"
         paper.text_in_img(unicode(title, 'UTF8'), unicode(story, 'UTF8'))
         # os.system('lpr ' + filename + fileformat + '')
