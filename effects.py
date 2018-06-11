@@ -6,6 +6,7 @@ import textwrap
 import storydesign
 from random import randint
 import re
+import datetime
 
 # fonts
 editor_regular = 'assets/fonts/Editor/Editor-Regular.ttf'
@@ -95,9 +96,9 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
 		font_effects_height += height
                     
                 # get the images height for drawImage
-                if start_sentence == "Puis":
-                    img_height = add_image("assets/img/mountains.jpg", False)
-                    images_height += img_height
+##                if start_sentence == "Puis":
+##                    img_height = add_image("assets/img/mountains.jpg", False)
+##                    images_height += img_height
                     
             #rest of the sentence
             end_sentence = story_part[end + 1:len(story_part)].strip()
@@ -133,6 +134,8 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
     end_random = storydesign.StoryDesign.end_random
     img_end_height = add_image("assets/img/fin0"+ str(end_random) +".jpg", False)
     images_height += img_end_height
+    
+    images_height = 250 # end_height
     
     # cut
     img_cut_height = add_image("assets/img/cut.jpg", False)
@@ -710,8 +713,8 @@ def place_img_position(width, expression, spacing, font_size, text_color, top, l
     
 def imposed_event(width, expression, contour_word, top, font_bold, font_contour, font_size, after_part, spacing, text_color, context = False):
     
-    text_event_bold = ImageFont.truetype(font_bold, font_size + 12, encoding="unic")
-    text_event_contour = ImageFont.truetype(font_contour, font_size + 5, encoding="unic")
+    text_event_bold = ImageFont.truetype(font_bold, font_size + 18, encoding="unic")
+    text_event_contour = ImageFont.truetype(font_contour, font_size + 11, encoding="unic")
 		    
     words = expression.split(" ")
     top += after_part
@@ -735,8 +738,8 @@ def imposed_event(width, expression, contour_word, top, font_bold, font_contour,
                 if context : context.text((left, top), word, fill=text_color, font=text_event_bold) # draw text
             left += word_width + 10
         else:
-            top += spacing + 10
-            effect_height += spacing + 10
+            top += spacing + 18
+            effect_height += spacing + 18
             left = 0
             if word == contour_word.upper():
                 if context : context.text((left, top + 4), word, fill=text_color, font=text_event_contour) # draw text
@@ -749,6 +752,44 @@ def imposed_event(width, expression, contour_word, top, font_bold, font_contour,
     
     return effect_height
 
+
+def draw_end(width, top_end, font_size, text_color, spacing, img, context = False):
+    
+    effect_height = top_end
+    
+    # draw end line
+    top_end += 80
+    effect_height += 80
+    line_width = 280
+    line_center = (width - line_width) / 2
+    context.line((line_center , top_end,  line_center + line_width, top_end), "#000", 2) # line
+        
+    # written by
+    text_maison_neue_book_written = ImageFont.truetype(maison_neue_book, font_size - 12, encoding="unic")
+        
+    now = datetime.datetime.now()
+    date = "Imprimée le ".decode("utf-8").upper() + "%d" % now.day + "-%d" % now.month + "-%d" % now.year
+    top_end += 10
+    effect_height += 10
+    date_width, date_height = text_maison_neue_book_written.getsize(date) # get text width
+    date_left = (width - date_width) / 2
+    context.multiline_text((date_left,top_end), date, fill=text_color, font=text_maison_neue_book_written)
+        
+    top_end += 2 * spacing / 3
+    effect_height += 2 * spacing
+    sentence = "Une histoire de :".upper()
+    sentence_width, sentence_height = text_maison_neue_book_written.getsize(sentence) # get text width
+    sentence_left = (width - sentence_width) / 2
+    context.multiline_text((sentence_left,top_end), sentence, fill=text_color, font=text_maison_neue_book_written)
+    top_end += 120
+    effect_height += 120
+
+    # cut
+    img_cut_height = add_image("assets/img/cut.jpg", True, top_end, img)
+    
+    return effect_height
+    
+    
 def add_image(url, add, top = 0, img_bg = False, left = 0):
     custom_img = Image.open(url)
     if add == True : img_bg.paste(custom_img, (left, top))

@@ -372,34 +372,11 @@ class StoryDesign():
             top += after_part
 
         # add end
+        top_end += 30
         img_end_height = effects.add_image("assets/img/fin0"+ str(self.end_random) +".jpg", True, top_end, img)
         top_end += img_end_height
         
-        # draw end line
-        top_end += 50
-        line_width = 280
-        line_center = (self.width - line_width) / 2
-        context.line((line_center , top_end,  line_center + line_width, top_end), "#000", 2) # line
-        
-        # written by
-        text_maison_neue_book_written = ImageFont.truetype(maison_neue_book, self.font_size - 5, encoding="unic")
-        
-        now = datetime.datetime.now()
-        date = "Imprimé le ".decode("utf-8").upper() + "%d" % now.day + "-%d" % now.month + "-%d" % now.year
-        top_end += 10
-        date_width, date_height = text_maison_neue_book_written.getsize(date) # get text width
-        date_left = (self.width - date_width) / 2
-        context.multiline_text((date_left,top_end), date, fill=self.text_color, font=text_maison_neue_book_written)
-        
-        top_end += 2 * spacing / 3
-        sentence = "Pour".upper()
-        sentence_width, sentence_height = text_maison_neue_book_written.getsize(sentence) # get text width
-        sentence_left = (self.width - sentence_width) / 2
-        context.multiline_text((sentence_left,top_end), sentence, fill=self.text_color, font=text_maison_neue_book_written)
-        top_end += 100
-
-        # cut
-        img_cut_height = effects.add_image("assets/img/cut.jpg", True, top_end, img)
+        height = effects.draw_end(self.width, top_end, font_size, self.text_color, spacing, img, context)
 
         
         del context # destroy drawing context

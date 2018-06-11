@@ -66,14 +66,14 @@ class Server(BaseHTTPRequestHandler):
 def run(server_class=HTTPServer, handler_class=Server):
     
         #local story design
-##        paper = storydesign.StoryDesign()
-##        filename = paper.filename
-##        fileformat = paper.fileformat
-##        
-##        title = "Un bonhomme nommé Sam le chasseur au coeur de la jungle"
-##        story = "Il était une fois, un petit bonhomme nommé Sam. Il portait toujours un chapeau sur la tête. Sam avait pour habitude de parcourir la savane tous les étés. Mais cette fois-ci, il décida de partir au coeur de la jungle.@Soudain, il rencontra un serpent lors d’un détour. Il n’avait pas peur de lui. En effet, il était habitué à rencontrer des animaux lors de ses voyages. Après cet évènement, Il décida d’aller rendre visite aux crocodiles. C'est alors qu'un sorcier surgit de nulle part, il jeta un sort et éclata de rire. @Malheureusement, il le transforma lui-même en un crocodile. @Et c'est ainsi qu’il décida de rester animal toute sa vie."
-##        paper.text_in_img(unicode(title, 'UTF8'), unicode(story, 'UTF8'))
-##        # os.system('lpr ' + filename + fileformat + '')
+        paper = storydesign.StoryDesign()
+        filename = paper.filename
+        fileformat = paper.fileformat
+        
+        title = "Un bonhomme nommé Sam le chasseur au coeur de la jungle"
+        story = "Il était une fois, un petit bonhomme nommé Sam. Il portait toujours un chapeau sur la tête. Sam avait pour habitude de parcourir la savane tous les étés. Mais cette fois-ci, il décida de partir au coeur de la jungle.@Soudain, il rencontra un serpent lors d’un détour. Il n’avait pas peur de lui. En effet, il était habitué à rencontrer des animaux lors de ses voyages. Après cet évènement, Il décida d’aller rendre visite aux crocodiles. C'est alors qu'une plante se mit à pousser tellement haut qu'on en voyait plus la fin ! La plante gênait le passage. @Malheureusement, il le transforma lui-même en un crocodile. @Et c'est ainsi qu’il décida de rester animal toute sa vie."
+        paper.text_in_img(unicode(title, 'UTF8'), unicode(story, 'UTF8'))
+        # os.system('lpr ' + filename + fileformat + '')
         
 	host = commands.getoutput('hostname -I') #raspberry IP : depending the network
 	port = 8080
