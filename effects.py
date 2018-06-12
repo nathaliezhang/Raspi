@@ -135,7 +135,7 @@ def get_img_height(custom_words, title, story_parts, width, onceupon_effect, top
     img_end_height = add_image("assets/img/fin0"+ str(end_random) +".jpg", False)
     images_height += img_end_height
     
-    images_height = 250 # end_height
+    images_height = 200 # end_height
     
     # cut
     img_cut_height = add_image("assets/img/cut.jpg", False)
@@ -786,9 +786,14 @@ def draw_end(width, top_end, font_size, text_color, spacing, img, context = Fals
     sentence_width, sentence_height = text_maison_neue_book_written.getsize(sentence) # get text width
     sentence_left = (width - sentence_width) / 2
     context.multiline_text((sentence_left,top_end), sentence, fill=text_color, font=text_maison_neue_book_written)
-    top_end += 120
-    effect_height += 120
+    top_end += 150
+    effect_height += 150
 
+    # website
+    img_end_height = add_image("assets/img/website.png", True, top_end, img)
+    top_end += img_end_height
+    effect_height += img_end_height
+    
     # cut
     img_cut_height = add_image("assets/img/cut.jpg", True, top_end, img)
     

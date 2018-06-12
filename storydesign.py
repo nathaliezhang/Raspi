@@ -124,7 +124,6 @@ class StoryDesign():
                 if start_sentence.find(",") >= 0:
 		    start_sentence = start_sentence[0:len(start_sentence) - 1] # suctract "," to detect the word
 		
-		print start_sentence
 		    
 		# fonction mirrot effect
 		if start_sentence == "Il était une fois":
