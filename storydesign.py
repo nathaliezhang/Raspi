@@ -123,7 +123,8 @@ class StoryDesign():
 		# check if have a custom word in this paragraph
                 if start_sentence.find(",") >= 0:
 		    start_sentence = start_sentence[0:len(start_sentence) - 1] # suctract "," to detect the word
-		    
+		
+		print start_sentence
 		    
 		# fonction mirrot effect
 		if start_sentence == "Il était une fois":
@@ -204,8 +205,12 @@ class StoryDesign():
 		elif start_sentence == "C'est alors que des météorites tombèrent du ciel. Elle créèrent d'énormes cratères en s'écrasant sur le sol !" or start_sentence == "C'est alors que des météorites tombèrent du ciel. Elles roulèrent et enflammèrent tout ce qui se trouvait aux alentours.":
                     height = effects.imposed_event(self.width, start_sentence, "météorites", top, maison_neue_bold, maison_neue_contour, self.font_size, after_part, spacing, self.text_color, context)
 		    top += height
-		    
-		elif start_sentence == "C'est alors qu'une tornade effroyable éclata. Le vent était si fort qu'il emportait tout sur son passage" or start_sentence == "C'est alors qu'une tornade effroyable éclata. Par chance, elle ne dura pas très longtemps":
+		
+		elif start_sentence == "C'est alors qu'une tornade effroyable éclata. Le vent était si fort qu'il emportait tout sur son passage.":
+                    height = effects.imposed_event(self.width, start_sentence, "tornade_pt", top, maison_neue_bold, maison_neue_contour, self.font_size, after_part, spacing, self.text_color, context)
+		    top += height
+                
+                elif start_sentence == "C'est alors qu'une tornade effroyable éclata. Par chance, elle ne dura pas très longtemps":
                     height = effects.imposed_event(self.width, start_sentence, "tornade", top, maison_neue_bold, maison_neue_contour, self.font_size, after_part, spacing, self.text_color, context)
 		    top += height
 		    
