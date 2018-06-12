@@ -69,15 +69,15 @@ class Server(BaseHTTPRequestHandler):
 		
 def run(server_class=HTTPServer, handler_class=Server):
     
-##        #local story design
-##        paper = storydesign.StoryDesign()
-##        filename = paper.filename
-##        fileformat = paper.fileformat
-##        
-##        title = "Un bonhomme nommé Sam le chasseur au coeur de la jungle"
-##        story = "Il était une fois, un petit bonhomme nommé Sam. Il portait toujours un chapeau sur la tête. Sam avait pour habitude de parcourir la savane tous les étés. Mais cette fois-ci, il décida de partir au coeur de la jungle.@Soudain, il rencontra un serpent lors d’un détour. Il n’avait pas peur de lui. En effet, il était habitué à rencontrer des animaux lors de ses voyages. Après cet évènement, Il décida d’aller rendre visite aux crocodiles. C'est alors qu'une plante se mit à pousser tellement haut qu'on en voyait plus la fin ! La plante gênait le passage. @Malheureusement, il le transforma lui-même en un crocodile. @Et c'est ainsi qu’il décida de rester animal toute sa vie."
-##        paper.text_in_img(unicode(title, 'UTF8'), unicode(story, 'UTF8'))
-##        # os.system('lpr ' + filename + fileformat + '')
+        #local story design
+        paper = storydesign.StoryDesign()
+        filename = paper.filename
+        fileformat = paper.fileformat
+        
+        title = "Thierry le professeur de BDDI qui voulait que toute la classe réussisse son jury sur la lune"
+        story = "Il était une fois, Thierry le professeur de BDDI qui voulait que toute la classe réussisse son jury. Il aimait la pluie. Thierry  avait pour habitude de faire le mini golf avec des singes. Mais cette fois-ci, il se prélassait dans les remous sur la lune. @Tout à coup, un dragon surgit. Thierry essaye de se réfugier dans une grotte. Peu de temps après, il s’endormit. C'est alors qu'une guerrière apparut et lança un défi : réussir à la battre à l'épée. @Malheureusement, Thierry n’avait pas envie de se battre. Il lui proposa plutôt d’aller s’en prendre au dragon. @Et c'est ainsi que Thierry put se débarrasser des troubles fêtes de son repos"
+        paper.text_in_img(unicode(title, 'UTF8'), unicode(story, 'UTF8'))
+        # os.system('lpr ' + filename + fileformat + '')
         
 	host = commands.getoutput('hostname -I') #raspberry IP : depending the network
 	port = 8080

@@ -169,7 +169,7 @@ def two_fonts_title(width, title, regular_font, bold_font, spacing, text_color, 
         else:
             word_width, word_height = text_proto_bold.getsize(title_parts[i])
     
-        if left + word_width < width:
+        if left + word_width < width - 50:
             line_words.append(title_parts[i]) # stock words in a line
             left += word_width + 10
 
