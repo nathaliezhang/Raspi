@@ -719,7 +719,6 @@ def imposed_event(width, expression, contour_word, top, font_bold, font_contour,
     words = expression.split(" ")
     top += after_part
     left = 0
-    del_point = ""
     effect_height = after_part
 		    
     for word in words:
@@ -727,11 +726,11 @@ def imposed_event(width, expression, contour_word, top, font_bold, font_contour,
             contour_word = u'météorites'.upper()
         elif word == 'guerrière':
             contour_word = u'guerrière'.upper()
-        
+            
         if contour_word == 'tornade_pt':
             contour_word = 'tornade'
-            del_point = 'tornade'
         
+            
         word = word.upper()
         word_width, word_height = text_event_bold.getsize(word)
                         
@@ -752,7 +751,7 @@ def imposed_event(width, expression, contour_word, top, font_bold, font_contour,
                 if context : context.text((left, top), word, fill=text_color, font=text_event_bold) # draw text
             left += word_width + 10
  
-    if contour_word == "sorcier" or del_point != "tornade":
+    if contour_word == "sorcier" or contour_word == "tornade_pt":
         if context : context.text((left - 10, top), '.', fill=text_color, font=text_event_bold) # draw text
     
     return effect_height
@@ -790,7 +789,7 @@ def draw_end(width, top_end, font_size, text_color, spacing, img, context = Fals
     effect_height += 150
 
     # website
-    img_end_height = add_image("assets/img/website.png", True, top_end, img)
+    img_end_height = add_image("assets/img/website.jpg", True, top_end, img)
     top_end += img_end_height
     effect_height += img_end_height
     

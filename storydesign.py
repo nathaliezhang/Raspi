@@ -82,7 +82,8 @@ class StoryDesign():
         title_margin_bottom = 80
         font_width, font_height = text_maison_neue_book.getsize(self.text)
         spacing = font_height + 5
-        before = bottom = 100
+        before = 800
+        bottom = 100
         after_part = 80
         
         onceupon_effect = randint(1,2)
